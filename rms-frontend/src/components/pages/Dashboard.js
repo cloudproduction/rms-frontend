@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-// import Sidebar from '../layouts/Sidebar';
-// import Content from './Content';
+// import 'font-awesome/css/font-awesome.min.css';
 import { Redirect } from 'react-router-dom'
 import {
     BrowserRouter as Router,
@@ -8,9 +7,10 @@ import {
     Route,
     Link
 } from "react-router-dom";
-
+import ClientManagement from './ClientManagement';
 import Home from './Home';
 import UserManagement from './UserManagement';
+
 
 class Dashboard extends Component {
     constructor(props) {
@@ -23,10 +23,22 @@ class Dashboard extends Component {
         }
 
         this.state = {
-            loggedIn
+            loggedIn,
+            menu: false
         }
+        this.toggleMenu = this.toggleMenu.bind(this);
     }
+
+
+    toggleMenu(){
+       alert('hi')
+      this.setState({ menu: !this.state.menu })
+    }
+  
+
     render() {
+      
+      const show = (this.state.menu) ? "show" : "" ;
         if (this.state.loggedIn === false) {
             return <Redirect to="/" />
         }
@@ -45,7 +57,7 @@ class Dashboard extends Component {
                <Link to={`${match.path}/usermanagement`} style={{ textDecoration: 'none' }}><i className="fa fa-angle-right" /> User Management RBA </Link>
             </li>
             <li>
-               <a href="client management.html" style={{ textDecoration: 'none' }}><i className="fa fa-angle-right" /> Client Management </a>
+               <Link to={`${match.path}/client-management`} style={{ textDecoration: 'none' }}><i className="fa fa-angle-right" /> Client Management </Link>
             </li>
             <li>
                <a href="department_management.html" style={{ textDecoration: 'none' }}><i className="fa fa-angle-right" /> Department Management </a>
@@ -92,12 +104,12 @@ class Dashboard extends Component {
          <nav className="navbar navbar-expand-lg navbar-light" style={{ background: 'white' }}>
          <div className="container-fluid">
             <button type="button" id="sidebarCollapse" className="btn btn-default">
-            <i className="fas fa-bars" />
+            <i className="fa fa-bars" />
             </button>
-            <button className="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button onClick={ this.toggleMenu } className="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <i className="fas fa-align-justify" />
             </button>
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <div className={"collapse navbar-collapse" + show} id="navbarSupportedContent">
                <ul className="nav navbar-nav ml-auto">
                   <li className="nav-item">
                      <a className="nav-link" href="#">
@@ -169,6 +181,7 @@ class Dashboard extends Component {
          <Switch>
             <Route exact path={`${match.path}/`} component={Home} />
             <Route path={`${match.path}/usermanagement`} component={UserManagement} />
+            <Route path={`${match.path}/client-management`} component={ClientManagement} />
             {/* 
             <Route path="/logout" component={Logout}></Route>
             */}

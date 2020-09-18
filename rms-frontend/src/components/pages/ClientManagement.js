@@ -1,18 +1,12 @@
 import React, { Component } from 'react';
-import 'font-awesome/css/font-awesome.min.css';
 
-class UserManagement extends Component {
-
+class ClientManagement extends Component {
     constructor(props) {
-
-        super(props)
+        super(props);
         this.state = {}
     }
-
-
     render() {
         return (
-
             <div>
                 <div className="layout_content">
                     <div className="container">
@@ -24,7 +18,7 @@ class UserManagement extends Component {
                                         <div className="card table-card">
                                             <div className="card-header" id="headingOne">
                                                 <h2 className="mb-0">
-                                                </h2><h3 className="float-left"><i id="addIcon" className="fa fa-chevron-circle-down" style={{ font: 15 }} /> User management
+                                                </h2><h3 className="float-left"><i id="addIcon" className="fa fa-chevron-circle-down" style={{ font: 15 }} /> Client management
                   </h3>
                                                 <button type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" className="btn btn-sm btn-info btn-base float-right">
                                                     <i className="fa fa-plus-square-o" />&nbsp;
@@ -37,19 +31,19 @@ class UserManagement extends Component {
                                                         <div className="form-row">
                                                             <div className="col-md-4">
                                                                 <div className="form-group">
-                                                                    <label htmlFor="exampleInputEmail1"> First Name</label>
+                                                                    <label htmlFor="exampleInputEmail1"> Client Name</label>
                                                                     <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
                                                                 </div>
                                                             </div>
                                                             <div className="col-md-4">
                                                                 <div className="form-group">
-                                                                    <label htmlFor="exampleInputEmail1"> Last  Name</label>
+                                                                    <label htmlFor="exampleInputEmail1"> Address</label>
                                                                     <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
                                                                 </div>
                                                             </div>
                                                             <div className="col-md-4">
                                                                 <div className="form-group">
-                                                                    <label htmlFor="exampleInputEmail1">Username</label>
+                                                                    <label htmlFor="exampleInputEmail1">Contact Info</label>
                                                                     <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
                                                                 </div>
                                                             </div>
@@ -57,34 +51,35 @@ class UserManagement extends Component {
                                                         <div className="form-row">
                                                             <div className="col-md-4">
                                                                 <div className="form-group">
-                                                                    <label htmlFor="exampleInputEmail1">Email address</label>
+                                                                    <label htmlFor="exampleInputEmail1">Emial address</label>
                                                                     <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
                                                                 </div>
                                                             </div>
                                                             <div className="col-md-4">
                                                                 <div className="form-group">
-                                                                    <label htmlFor="exampleInputEmail1">Password </label>
-                                                                    <input type="password" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
+                                                                    <label htmlFor="exampleInputEmail1">Phone no </label>
+                                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
                                                                 </div>
                                                             </div>
                                                             <div className="col-md-4">
                                                                 <div className="form-group">
-                                                                    <label htmlFor=" exampleFormControlSelect1"> &nbsp;</label>
-                                                                    <br />
-                                                                    <button type="submit" className="btn btn btn-info btn-base float-right ">
-                                                                        Submit
-                            </button>
+                                                                    <label htmlFor="exampleFormControlSelect1">Status</label>
+                                                                    <select className="form-control" id="exampleFormControlSelect1">
+                                                                        <option value= "">Active</option>
+                                                                        <option value= "">Deactive</option>
+                                                                    </select>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        {/* <div class="form-row">
-                                                  <div class="form-group col-md-12">
-
-                                                  </div>
-                                                  <div class="form-group col-md-6">
-
-                                                  </div>
-                                              </div> */}
+                                                        <div className="form-row">
+                                                            <div className="form-group col-md-12">
+                                                                <button type="submit" className="btn btn-sm btn-info btn-base float-right">
+                                                                    Submit
+                          </button>
+                                                            </div>
+                                                            <div className="form-group col-md-6">
+                                                            </div>
+                                                        </div>
                                                     </form>
                                                 </div>
                                             </div>
@@ -104,56 +99,65 @@ class UserManagement extends Component {
                           </div> */}
                                     <div className="card-body">
                                         <div className="table-responsive">
-                                            <table  id="example" className="table table-striped table-bordered" style={{ width: '100%' }}>
+                                            <table id="example" className="table table-striped table-bordered" style={{ width: '100%' }}>
                                                 <thead>
                                                     <tr>
-                                                        <th>First Name</th>
-                                                        <th>Last Name</th>
-                                                        <th>Username</th>
+                                                        <th>Client Name</th>
+                                                        <th>Address</th>
+                                                        <th>Contact Info</th>
                                                         <th>Email</th>
-                                                        <th width="80px">Action</th>
+                                                        <th>Phone No</th>
+                                                        <th>Status</th>
+                                                        <th>Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <tr>
                                                         <td>Ayan</td>
-                                                        <td>hasan</td>
-                                                        <td>ayan123</td>
-                                                        <td>ayan@gmail.com</td>
+                                                        <td>Dhaka</td>
+                                                        <td>22/3 Lalmatia</td>
+                                                        <td>tiger@gmail.com</td>
+                                                        <td>01720110425</td>
+                                                        <td><span className="approved">Active</span></td>
                                                         <td className="text-nowrap">
-                                                           
+                                                            <div>
                                                                 <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
                                                                     <i className="fa fa-trash-o" />
                                                                 </button>
                                                                 <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
                                                                     <i className="fa fa-pencil" />
                                                                 </button>
-                                                           
+                                                            </div>
                                                         </td>
                                                     </tr>
+
                                                     <tr>
-                                                        <td>Ayan</td>
-                                                        <td>hasan</td>
-                                                        <td>ayan123</td>
-                                                        <td>ayan@gmail.com</td>
+                                                        <td>Bikrom</td>
+                                                        <td>Dhaka</td>
+                                                        <td>29/3 Lalmatia</td>
+                                                        <td>Bikrom@gmail.com</td>
+                                                        <td>01726610425</td>
+                                                        <td><span className="disapproved">Deactive</span></td>
                                                         <td className="text-nowrap">
-                                                            
+                                                            <div>
                                                                 <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
-                                                                    <i className="fa fa-trash-o" />
+                                                                    <i className="fa fa-trash-o"></i>
                                                                 </button>
                                                                 <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
-                                                                    <i className="fa fa-pencil" />
+                                                                    <i className="fa fa-pencil"></i>
                                                                 </button>
-                                                            
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <th>First Name</th>
-                                                        <th>Last Name</th>
-                                                        <th>Username</th>
+                                                        <th>Client Name</th>
+                                                        <th>Address</th>
+                                                        <th>Contact Info</th>
                                                         <th>Email</th>
+                                                        <th>Phone No</th>
+                                                        <th>Status</th>
                                                         <th width="80px">Action</th>
                                                     </tr>
                                                 </tfoot>
@@ -167,7 +171,7 @@ class UserManagement extends Component {
                                     <div className="modal-content">
                                         <div className="modal-header">
                                             <h5 className="modal-title" id="exampleModalLabel">
-                                                Edit User
+                                                Edit Client
                 </h5>
                                             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">
@@ -180,19 +184,19 @@ class UserManagement extends Component {
                                                 <div className="form-row">
                                                     <div className="col-md-4">
                                                         <div className="form-group">
-                                                            <label htmlFor="exampleInputEmail1"> First Name</label>
+                                                            <label htmlFor="exampleInputEmail1"> Client Name</label>
                                                             <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
                                                         </div>
                                                     </div>
                                                     <div className="col-md-4">
                                                         <div className="form-group">
-                                                            <label htmlFor="exampleInputEmail1"> Last  Name</label>
+                                                            <label htmlFor="exampleInputEmail1"> Address</label>
                                                             <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
                                                         </div>
                                                     </div>
                                                     <div className="col-md-4">
                                                         <div className="form-group">
-                                                            <label htmlFor="exampleInputEmail1">Username</label>
+                                                            <label htmlFor="exampleInputEmail1">Contact Info</label>
                                                             <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
                                                         </div>
                                                     </div>
@@ -200,33 +204,29 @@ class UserManagement extends Component {
                                                 <div className="form-row">
                                                     <div className="col-md-4">
                                                         <div className="form-group">
-                                                            <label htmlFor="exampleInputEmail1">Email address</label>
+                                                            <label htmlFor="exampleInputEmail1">Emial address</label>
                                                             <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
                                                         </div>
                                                     </div>
                                                     <div className="col-md-4">
                                                         <div className="form-group">
-                                                            <label htmlFor="exampleInputEmail1">Password </label>
-                                                            <input type="password" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
+                                                            <label htmlFor="exampleInputEmail1">Phone no </label>
+                                                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
                                                         </div>
                                                     </div>
                                                     <div className="col-md-4">
                                                         <div className="form-group">
+                                                            <label htmlFor="exampleFormControlSelect1">Status</label>
+                                                            <select className="form-control" id="exampleFormControlSelect1">
+                                                                <option value= "">Active</option>
+                                                                <option value= "">Deactive</option>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {/* <div class="form-row">
-                                          <div class="form-group col-md-12">
-
-                                          </div>
-                                          <div class="form-group col-md-6">
-
-                                          </div>
-                                      </div> */}
                                             </form>
                                         </div>
                                         <div className="modal-footer">
-                                            <label htmlFor="exampleInputEmail1" />
                                             <button type="button" className="btn btn-secondary" data-dismiss="modal">
                                                 Close
                 </button>
@@ -246,4 +246,4 @@ class UserManagement extends Component {
     }
 }
 
-export default UserManagement;
+export default ClientManagement;
