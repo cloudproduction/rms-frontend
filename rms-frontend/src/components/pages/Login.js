@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import {Redirect} from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
+import axios from 'axios';
 
 class Login extends Component {
     constructor(props) {
         super(props);
-        
+
         const token = localStorage.getItem("token")
 
         let loggedIn = true
-        if(token === null) {
+        if (token === null) {
             loggedIn = false
         }
 
@@ -21,9 +22,9 @@ class Login extends Component {
         this.submitForm = this.submitForm.bind(this)
     }
 
- onInputChange(e) {
+    onInputChange(e) {
         this.setState({
-            [e.target.name]:e.target.value
+            [e.target.name]: e.target.value
         })
         console.log(this.state);
     }
@@ -31,20 +32,76 @@ class Login extends Component {
 
     submitForm = (e) => {
         e.preventDefault()
-        const {username,password} = this.state
-        // login start
-        if(username === "A" && password ==="b") {
-            localStorage.setItem("token","julfikar")
-            this.setState({
-                loggedIn:true
+
+        const user_info = {
+            username: this.state.username,
+            password: this.state.password
+        };
+
+        // if(user_info){
+        //     localStorage.setItem("token","julfikar")
+        //     this.setState({
+        //             loggedIn:true
+        //         })
+        // }
+        // axios.post('http://workapis.pythonanywhere.com/api/login/', user_info)
+        // .then(res => {
+
+        //     localStorage.setItem("token", JSON.stringify(res))
+        //     this.setState({
+        //                     loggedIn:true
+        //                 })
+        //             }
+        // );
+
+        // axios.post('http://workapis.pythonanywhere.com/api/login/', user_info)
+        // .then(resp => {
+        //     console.log('data',resp);
+        //     if(resp.length > 0){
+        //         localStorage.setItem("token", JSON.stringify(resp))
+        //         this.setState({
+        //                 loggedIn:true
+        //         })
+        //     }else{
+        //         alert('Your username and password not match')
+        //     }
+        // } 
+
+        //     // window.localStorage.setItem('token', res.data.data.token)
+        // );
+
+        axios.post('http://workapis.pythonanywhere.com/api/login/', user_info).then(response => {
+
+            if(response.data != null){
+
+                console.log('76', response.data);
+                console.log('78', response.data);
+                localStorage.setItem("token", JSON.stringify(response.data))
+                this.setState({
+                    loggedIn: true
+                })
+            }
+            
+        })
+            .catch(err => {
+                // what now?
+                console.log(err);
+                alert("Username and Password not Match")
             })
-            console.log(username);
-        }
+
+        // login start
+        // if(username === "A" && password ==="b") {
+        //     localStorage.setItem("token","julfikar")
+        //     this.setState({
+        //         loggedIn:true
+        //     })
+        //     console.log(username);
+        // }
     }
 
     render() {
-        if(this.state.loggedIn) {
-            return <Redirect to="/dashboard"/>
+        if (this.state.loggedIn) {
+            return <Redirect to="/dashboard" />
         }
         return (
             <div className="login-bg-color">
@@ -59,14 +116,14 @@ class Login extends Component {
                                 <h3>User Login:</h3>
                                 <form className="text-center" onSubmit={this.submitForm}>
                                     <div className="form-group">
-                                        <input type="text" id="materialLoginFormEmail" name="username" 
-                                        className="form-control" placeholder=" Enter your Username" 
-                                        value={this.state.username} onChange={this.onInputChange}/>
+                                        <input type="text" id="materialLoginFormEmail" name="username"
+                                            className="form-control" placeholder=" Enter your Username"
+                                            value={this.state.username} onChange={this.onInputChange} />
                                     </div>
                                     <div className="form-group">
                                         <input type="password" id="materialLoginFormPassword" name="password"
-                                         className="form-control" placeholder="Enter Your Password"
-                                         value={this.state.password} onChange={this.onInputChange} />
+                                            className="form-control" placeholder="Enter Your Password"
+                                            value={this.state.password} onChange={this.onInputChange} />
                                         <a href="" className="text-right float-right forgot">Forgot password?</a>
                                     </div>
                                     <div className="form-group">
