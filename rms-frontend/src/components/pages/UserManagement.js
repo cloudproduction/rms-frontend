@@ -69,9 +69,21 @@ class UserManagement extends Component {
                                                             </div>
                                                             <div className="col-md-4">
                                                                 <div className="form-group">
+                                                                <label>User Groups</label>
+                                                        <select className="selectpicker" multiple data-live-search="true">
+                                                            <option value="saab">MR. kawsar</option>
+                                                            <option value="saab"> Mr.Hamid</option>
+                                                            <option value="saab">Mr. Julfikar</option>
+                                                            <option value="saab">Mr. Maruf</option>
+                                                        </select>
+                                                                    </div>
+                                                            </div>
+
+                                                            <div className=" col-md-4 ">
+                                                                <div className="form-group">
                                                                     <label htmlFor=" exampleFormControlSelect1"> &nbsp;</label>
                                                                     <br />
-                                                                    <button type="submit" className="btn btn btn-info btn-base float-right ">
+                                                                    <button type="submit" className="btn btn btn-info btn-base">
                                                                         Submit
                             </button>
                                                                 </div>

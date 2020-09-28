@@ -1,11 +1,46 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 
 class ClientManagement extends Component {
     constructor(props) {
+        const token = localStorage.getItem("token")
         super(props);
-        this.state = {}
+        this.state = {
+            clientData: [] 
+
+        }
     }
+    
+    componentDidMount() {
+        this.loadUsers();
+
+    }
+      
+    loadUsers = () => {
+        const token = JSON.parse(window.localStorage.getItem('token')) 
+        if (token) {
+            const clientData =  axios.get('http://0.0.0.0:8000/api/clients/', {
+                headers: {
+                  'Authorization': `token ${token.token}`
+                }
+              })
+              .then((res) => {
+                //   console.log(res.data)
+                  this.setState({
+                      clientData:res.data
+                  })
+              })
+              .catch((error) => {
+                console.error(error)
+              })
+        }
+      
+    }
+      
+
     render() {
+     
+        
         return (
             <div>
                 <div className="layout_content">
@@ -112,7 +147,9 @@ class ClientManagement extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
+                                                    {
+                                                        this.state.clientData.map((clien_data, index) => 
+                                                        <tr key={index}>
                                                         <td>Ayan</td>
                                                         <td>Dhaka</td>
                                                         <td>22/3 Lalmatia</td>
@@ -130,25 +167,9 @@ class ClientManagement extends Component {
                                                             </div>
                                                         </td>
                                                     </tr>
+                                                        )
+                                                    }
 
-                                                    <tr>
-                                                        <td>Bikrom</td>
-                                                        <td>Dhaka</td>
-                                                        <td>29/3 Lalmatia</td>
-                                                        <td>Bikrom@gmail.com</td>
-                                                        <td>01726610425</td>
-                                                        <td><span className="disapproved">Deactive</span></td>
-                                                        <td className="text-nowrap">
-                                                            <div>
-                                                                <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
-                                                                    <i className="fa fa-trash-o"></i>
-                                                                </button>
-                                                                <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
-                                                                    <i className="fa fa-pencil"></i>
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>

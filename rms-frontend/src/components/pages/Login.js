@@ -70,13 +70,14 @@ class Login extends Component {
         //     // window.localStorage.setItem('token', res.data.data.token)
         // );
 
-        axios.post('http://workapis.pythonanywhere.com/api/login/', user_info).then(response => {
+        axios.post('http://0.0.0.0:8000/api/login/', user_info).then(response => {
 
             if(response.data != null){
 
                 console.log('76', response.data);
                 console.log('78', response.data);
                 localStorage.setItem("token", JSON.stringify(response.data))
+                
                 this.setState({
                     loggedIn: true
                 })
