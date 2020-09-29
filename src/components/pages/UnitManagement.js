@@ -1,12 +1,47 @@
 import React, { Component } from 'react';
+import axiosInstance from '../../intercept';
 
 class UnitManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            unitData: []
         };
     }
+    componentDidMount() {
+        this.loadUsers();
+    }
+
+    
+
+    loadUsers = () => {
+
+        
+        const token = JSON.parse(window.localStorage.getItem('token'))
+        console.log(token.token);
+        if (token) {
+            console.log('105 line');
+            axiosInstance.get('/units/', {
+                headers: {
+                    'Authorization': `token ${token.token}`
+                }
+
+            })
+                .then((res) => {
+                    console.log(res.data)
+                    this.setState({
+                        unitData: res.data.reverse()
+                    })
+
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+        } else {
+            alert('No token here')
+        }
+    }
+
     render() {
         return (
             <div>
@@ -41,8 +76,8 @@ class UnitManagement extends Component {
                                                                 <div className="form-group">
                                                                     <label htmlFor="exampleFormControlSelect1">Status</label>
                                                                     <select className="form-control" id="exampleFormControlSelect1">
-                                                                        <option selected>Deactive</option>
-                                                                        <option>Active</option>
+                                                                        <option value="Deactive">Deactive</option>
+                                                                        <option value="Active">Active</option>
                                                                     </select>
                                                                 </div>
                                                             </div>
@@ -81,9 +116,11 @@ class UnitManagement extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td>Kg</td>
-                                                        <td><span className="approved">Active</span></td>
+                                                    {
+                                                        this.state.unitData.map((unit_data, index) =>
+                                                        <tr key={index}>
+                                                        <td>{unit_data.name}</td>
+                                                        <td><span className="approved">{unit_data.status === true ? 'Active' : 'Pending'}</span></td>
                                                         <td className="text-nowrap">
                                                             <div>
                                                                 <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
@@ -95,20 +132,9 @@ class UnitManagement extends Component {
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                    <tr>
-                                                        <td>kgm</td>
-                                                        <td><span className="disapproved">Deactive</span></td>
-                                                        <td className="text-nowrap">
-                                                            <div>
-                                                                <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
-                                                                    <i className="fa fa-trash-o"></i>
-                                                                </button>
-                                                                <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
-                                                                    <i className="fa fa-pencil"></i>
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                        )
+                                                  }
+                                                 
 
                                                 </tbody>
                                                 <tfoot>

@@ -19,6 +19,7 @@ import ItemManagement from './ItemManagement';
 import TeamManagement from './TeamManagement';
 import UnitManagement from './UnitManagement';
 import UserManagement from './UserManagement';
+import ViewNewProject from './ViewNewProject';
 import ViewRequisition from './ViewRequisition';
 import ViewSite from './ViewSite';
 
@@ -95,7 +96,7 @@ class Dashboard extends Component {
                Management</a>
                         <ul className="collapse list-unstyled" id="pageSubmenu">
                            <li><Link to={`${match.path}/add-project-management`} style={{ textDecoration: 'none' }}><i className="fa fa-angle-right" /> Add New Project </Link></li>
-                           <li><a href="project_management.html" style={{ textDecoration: 'none' }}><i className="fa fa-angle-right" /> View All Projects</a></li>
+                           <li><Link to={`${match.path}/view-project-management`} style={{ textDecoration: 'none' }}><i className="fa fa-angle-right" /> View All Projects</Link></li>
                         </ul>
                      </li>
                      <li>
@@ -233,13 +234,14 @@ class Dashboard extends Component {
                      <Route path={`${match.path}/unit-management`} component={UnitManagement} />
                      <Route path={`${match.path}/item-management`} component={ItemManagement} />
                      <Route path={`${match.path}/add-project-management`} component={AddNewProject} />
+                     <Route path={`${match.path}/view-project-management`} component={ViewNewProject} />
                      <Route path={`${match.path}/add-site-management`} component={AddNewSite} />
                      <Route path={`${match.path}/view-site-management`} component={ViewSite} />
                      <Route path={`${match.path}/add-requisition`} component={AddRequisition} />
                      <Route path={`${match.path}/view-requisition`} component={ViewRequisition} />
                      <Route path={`${match.path}/edit-requisition`} component={EditRequsition} />
 
-                     {/* 
+                     {/* to={`${match.path}/view-project-management`}
             <Route path="/logout" component={Logout}></Route>
             */}
                   </Switch>

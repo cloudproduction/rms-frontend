@@ -1,12 +1,48 @@
 import React, { Component } from 'react';
 import 'font-awesome/css/font-awesome.min.css';
-
+import axiosInstance from '../../intercept';
 class UserManagement extends Component {
 
     constructor(props) {
 
         super(props)
-        this.state = {}
+        this.state = {
+            userData: []
+        }
+    }
+
+    componentDidMount() {
+        this.loadUsers();
+    }
+
+    
+
+    loadUsers = () => {
+
+        
+        const token = JSON.parse(window.localStorage.getItem('token'))
+        console.log(token.token);
+        if (token) {
+            console.log('105 line');
+            axiosInstance.get('/users/', {
+                headers: {
+                    'Authorization': `token ${token.token}`
+                }
+
+            })
+                .then((res) => {
+                    console.log(res.data)
+                    this.setState({
+                        userData: res.data.reverse()
+                    })
+
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+        } else {
+            alert('No token here')
+        }
     }
 
 
@@ -69,14 +105,15 @@ class UserManagement extends Component {
                                                             </div>
                                                             <div className="col-md-4">
                                                                 <div className="form-group">
-                                                                <label>User Groups</label>
-                                                        <select className="selectpicker" multiple data-live-search="true">
-                                                            <option value="saab">MR. kawsar</option>
-                                                            <option value="saab"> Mr.Hamid</option>
-                                                            <option value="saab">Mr. Julfikar</option>
-                                                            <option value="saab">Mr. Maruf</option>
-                                                        </select>
-                                                                    </div>
+                                                                    <label>User Groups</label>
+                                                                    <select className="form-control" id="UserGroup">
+                                                                        <option value="">Select Groups</option>
+                                                                        <option value="Managerial">Managerial</option>
+                                                                        <option value="Admin">Admin</option>
+                                                                        <option value="Executive">Executive</option>
+                                                                    </select>
+
+                                                                </div>
                                                             </div>
 
                                                             <div className=" col-md-4 ">
@@ -116,7 +153,7 @@ class UserManagement extends Component {
                           </div> */}
                                     <div className="card-body">
                                         <div className="table-responsive">
-                                            <table  id="example" className="table table-striped table-bordered" style={{ width: '100%' }}>
+                                            <table id="example" className="table table-striped table-bordered" style={{ width: '100%' }}>
                                                 <thead>
                                                     <tr>
                                                         <th>First Name</th>
@@ -124,50 +161,35 @@ class UserManagement extends Component {
                                                         <th>Username</th>
                                                         <th>Email</th>
                                                         <th>User Group</th>
-                                                    <th width="80px">Action</th>
+                                                        <th width="80px">Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td>Ayan</td>
-                                                        <td>hasan</td>
-                                                        <td>ayan123</td>
-                                                        <td>ayan@gmail.com</td>
-                                                        <td className="text-nowrap" > 
-                                                        <span className="badge badge-success">Admin</span>
-                                                        <span className="badge badge-success">Managerial</span>
-                                                    </td>
+                                                    {
+                                                        this.state.userData.map((user_data,index) => 
+                                                            <tr key={index}>
+                                                        <td>{user_data.first_name}</td>
+                                                        <td>{user_data.last_name}</td>
+                                                        <td>{user_data.username}</td>
+                                                        <td>{user_data.email}</td>
+                                                        <td className="text-nowrap" >
+                                                            <span className="badge badge-success">Admin</span>
+                                                            <span className="badge badge-success">Managerial</span>
+                                                        </td>
                                                         <td className="text-nowrap">
-                                                           
-                                                                <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
-                                                                    <i className="fa fa-trash-o" />
-                                                                </button>
-                                                                <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
-                                                                    <i className="fa fa-pencil" />
-                                                                </button>
-                                                           
+
+                                                            <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
+                                                                <i className="fa fa-trash-o" />
+                                                            </button>
+                                                            <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
+                                                                <i className="fa fa-pencil" />
+                                                            </button>
+
                                                         </td>
                                                     </tr>
-                                                    <tr>
-                                                        <td>Ayan</td>
-                                                        <td>hasan</td>
-                                                        <td>ayan123</td>
-                                                        <td>ayan@gmail.com</td>
-                                                        <td className="text-nowrap" style={{margin:'1px'}}>
-                                                        <span className="badge badge-success">Admin</span>
-                                                        <span className="badge badge-success">Managerial</span>
-                                                    </td>
-                                                        <td className="nowrap" >
-                                                            
-                                                                <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
-                                                                    <i className="fa fa-trash-o" />
-                                                                </button>
-                                                                <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
-                                                                    <i className="fa fa-pencil" />
-                                                                </button>
-                                                            
-                                                        </td>
-                                                    </tr>
+                                                 
+                                                        )
+                                                    }
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>

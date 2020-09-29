@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import ClientAddEdit from './ClientAddEdit';
 import axiosInstance from '../../intercept';
 
@@ -9,7 +9,15 @@ class ClientManagement extends Component {
         super(props);
         this.state = {
             clientData: [],
-            addModalShow: false
+            addModalShow: false,
+            client_object: {
+            name: "ddddd",
+            address: "",
+            contact_info: "",
+            email_address: "",
+            phone: "",
+            status: ""
+            }
         }
 
     }
@@ -20,46 +28,65 @@ class ClientManagement extends Component {
         this.loadUsers();
     }
 
-    componentDidUpdate() {
-
-    }
+    
 
     loadUsers = () => {
 
-        axiosInstance.get('/clients/').then(
-                res => {
-                    console.log(res.data);
-            }
-        )
-        // const token = JSON.parse(window.localStorage.getItem('token'))
-        // console.log(token.token);
-        // if (token) {
-        //     console.log('105 line');
-        //     axios.get('/api/clients/', {
-        //         headers: {
-        //             'Authorization': `token ${token.token}`
-        //         }
+        // axiosInstance.get('/clients/').then(
+        //         res => {
+        //             console.log(res.data);
+        //     }
+        // )
+        const token = JSON.parse(window.localStorage.getItem('token'))
+        console.log(token.token);
+        if (token) {
+            console.log('105 line');
+            axiosInstance.get('/clients/', {
+                headers: {
+                    'Authorization': `token ${token.token}`
+                }
 
-        //     })
-        //         .then((res) => {
-        //             console.log(res.data)
-        //             this.setState({
-        //                 clientData: res.data
-        //             })
+            })
+                .then((res) => {
+                    console.log(res.data)
+                    this.setState({
+                        clientData: res.data.reverse()
+                    })
 
-        //         })
-        //         .catch((error) => {
-        //             console.error(error)
-        //         })
-        // }
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+        } else {
+            alert('No token here')
+        }
     }
 
+    
+    deleteUser = async id => {
+        const token = JSON.parse(window.localStorage.getItem('token'))
+        if(token) {
+            await axiosInstance.delete(`/clients/${id}`, {
+               
+                headers: {
+                    'Authorization': `token ${token.token}`
+                }
+            }
+            );
+            this.loadUsers();
+          };
+    
+   }
+
+    // componentDidUpdate() {
+    //     this.loadUsers();
+    // }
 
     render() {
 
         let addModalClose = () => this.setState({ addModalShow: false })
         console.log(this.state.addModalShow);
-        
+
         return (
             <div>
                 <div className="layout_content">
@@ -104,11 +131,11 @@ class ClientManagement extends Component {
                                                 <thead>
                                                     <tr>
                                                         <th>Client Name</th>
-                                                        <th>Address</th>
-                                                        <th>Contact Info</th>
+                                                        {/* <th>Address</th> */}
+                                                        {/* <th>Contact Info</th> */}
                                                         <th>Email</th>
                                                         <th>Phone No</th>
-                                                        <th>Status</th>
+                                                        {/* <th>Status</th> */}
                                                         <th>Action</th>
                                                     </tr>
                                                 </thead>
@@ -117,14 +144,18 @@ class ClientManagement extends Component {
                                                         this.state.clientData.map((clien_data, index) =>
                                                             <tr key={index}>
                                                                 <td>{clien_data.name}</td>
-                                                                <td>{clien_data.address}</td>
-                                                                <td>{clien_data.contact_info}</td>
+                                                                {/* <td>{clien_data.address}</td> */}
+                                                                {/* <td>{clien_data.contact_info}</td> */}
                                                                 <td>{clien_data.email}</td>
                                                                 <td>{clien_data.phone_no}</td>
-                                                                <td><span className="approved">Active</span></td>
+                                                                {/* <td><span className="approved">Active</span></td> */}
                                                                 <td className="text-nowrap">
                                                                     <div>
-                                                                        <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
+                                                                        <button className="btn btn-sm btn-edit mr-2" data-toggle="modal" data-target="#AkashModal">
+                                                                            <i className="fas fa-eye" title="View Details" />
+                                                                        </button>
+
+                                                                        <button onClick={() => this.deleteUser(clien_data.id)} className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
                                                                             <i className="fa fa-trash-o" />
                                                                         </button>
                                                                         <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#">
@@ -140,11 +171,11 @@ class ClientManagement extends Component {
                                                 <tfoot>
                                                     <tr>
                                                         <th>Client Name</th>
-                                                        <th>Address</th>
-                                                        <th>Contact Info</th>
+                                                        {/* <th>Address</th> */}
+                                                        {/* <th>Contact Info</th> */}
                                                         <th>Email</th>
                                                         <th>Phone No</th>
-                                                        <th>Status</th>
+                                                        {/* <th>Status</th> */}
                                                         <th width="80px">Action</th>
                                                     </tr>
                                                 </tfoot>
@@ -156,7 +187,47 @@ class ClientManagement extends Component {
                             <ClientAddEdit
                                 show={this.state.addModalShow}
                                 onHide={addModalClose}
+                                client_object={this.state.client_object}
                             />
+
+                            {/* view modal start  */}
+
+                            <div className="modal fade" id="AkashModal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div className="modal-dialog modal-lg" role="document">
+                                    <div className="modal-content">
+                                        <div className="card">
+                                            <div className="card-header">
+                                                <h5 className="ml-4">View details</h5>
+                                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">
+                                                        ×
+            </span>
+                                                </button>
+                                            </div>
+                                            <div className="card-body-detail">
+                                                <div className="row">
+                                                    <div className="col-md-6">
+                                                        <b className="mr-1">Client Name : </b> Akash <br />
+                                                        <b className="mr-1">Address :</b> Dhaka <br />
+                                                        <b className="mr-1"> Email :</b> akash@gmail.com <br />
+                                                    </div>
+                                                    <div className="col-md-6">
+                                                        <b className="mr-1">Phone :</b> 01926610425 <br />
+                                                        <b className="mr-1">Status :</b> Active <br />
+                                                        <b className="mr-1">Contact Info:</b> 29/3 Lalmatia <br />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="card-footer text-muted">
+                                            </div>
+                                     
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* view modal end  */}
+
                         </div>
                     </div>
                 </div>

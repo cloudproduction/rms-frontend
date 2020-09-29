@@ -1,12 +1,48 @@
 import React, { Component } from 'react';
+import axiosInstance from '../../intercept';
 
 class DepartmentManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            deptData: []
         };
     }
+
+    componentDidMount() {
+        this.loadUsers();
+    }
+
+    
+
+    loadUsers = () => {
+
+        
+        const token = JSON.parse(window.localStorage.getItem('token'))
+        console.log(token.token);
+        if (token) {
+            console.log('105 line');
+            axiosInstance.get('/departments/', {
+                headers: {
+                    'Authorization': `token ${token.token}`
+                }
+
+            })
+                .then((res) => {
+                    console.log(res.data)
+                    this.setState({
+                        deptData: res.data.reverse()
+                    })
+
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+        } else {
+            alert('No token here')
+        }
+    }
+
     render() {
         return (
             <div>
@@ -84,9 +120,12 @@ class DepartmentManagement extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
-                                                        <td>Architect</td>
-                                                        <td><span className="approved">Active</span></td>
+                                                    
+                                                    {
+                                                        this.state.deptData.map((dep_data,index) =>
+                                                        <tr key={index}>
+                                                        <td>{dep_data.name}</td>
+                                                        <td><span className="approved">{dep_data.status=== true ? 'Active' : 'Deactive'}</span></td>
                                                         <td className="text-nowrap">
                                                             <div>
                                                                 <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
@@ -98,34 +137,9 @@ class DepartmentManagement extends Component {
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                    <tr>
-                                                        <td>Civil</td>
-                                                        <td><span className="approved">Active</span></td>
-                                                        <td className="text-nowrap">
-                                                            <div>
-                                                                <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
-                                                                    <i className="fa fa-trash-o" />
-                                                                </button>
-                                                                <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
-                                                                    <i className="fa fa-pencil" />
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>Construction</td>
-                                                        <td><span className="disapproved">Deactive</span></td>
-                                                        <td className="text-nowrap">
-                                                            <div>
-                                                                <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
-                                                                    <i className="fa fa-trash-o" />
-                                                                </button>
-                                                                <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
-                                                                    <i className="fa fa-pencil" />
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                        )
+                                                 }
+                                                 
                                           
                                                 </tbody>
                                                 <tfoot>

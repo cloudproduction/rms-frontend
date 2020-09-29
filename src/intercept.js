@@ -1,20 +1,33 @@
 import axios from "axios";
 
+// const token = JSON.parse(window.localStorage.getItem('token'))
+
   const axiosInstance = axios.create({
-  baseURL: 'http://localhost:8000/api'
-  
+    baseURL: 'http://localhost:8000/api'
+    // headers: {
+    //   'Authorization': `token ${token.token}`
+    // }
+   
   });
+
+  
+
+  // const axiosInstance = axios.create({
+  //   baseURL: 'http://localhost:8000/api',
+   
+  
+  // });
 console.log('file fired once a time');
-const token = JSON.parse(window.localStorage.getItem('token'))
-if (token) {
-   axiosInstance.interceptors.request.use(function (config) {
-    config.headers = { ...config.headers, Authorization: 'Token '+token.token };
-    // you can also do other modification in config
-    return config;
-  }, function (error) {
-    return Promise.reject(error);
-  }); 
-}
+// const token = JSON.parse(window.localStorage.getItem('token'))
+// if (token) {
+//    axiosInstance.interceptors.request.use(function (config) {
+//     config.headers = { ...config.headers, Authorization: 'Token '+token.token };
+//     // you can also do other modification in config
+//     return config;
+//   }, function (error) {
+//     return Promise.reject(error);
+//   }); 
+// }
 
 // axiosInstance.interceptors.request.use(function (config) {
 //     const token = JSON.parse(window.localStorage.getItem('token'))
@@ -26,6 +39,6 @@ if (token) {
 // }); 
 
 // const axiosInstance = () => {   
-      
+
 // }
-export default  axiosInstance ;
+export default axiosInstance;

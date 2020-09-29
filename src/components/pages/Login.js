@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom'
-import axios from 'axios';
+// import axios from 'axios';
 import axiosInstance from '../../intercept.js'
 
 class Login extends Component {

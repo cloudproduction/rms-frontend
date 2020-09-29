@@ -1,11 +1,47 @@
 import React, { Component } from 'react';
+import axiosInstance from '../../intercept';
+
 
 class TeamManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            teamData: []
         };
+    }
+
+    componentDidMount() {
+        this.loadUsers();
+    }
+
+    
+
+    loadUsers = () => {
+
+        
+        const token = JSON.parse(window.localStorage.getItem('token'))
+        console.log(token.token);
+        if (token) {
+            console.log('105 line');
+            axiosInstance.get('/teams/', {
+                headers: {
+                    'Authorization': `token ${token.token}`
+                }
+
+            })
+                .then((res) => {
+                    console.log(res.data)
+                    this.setState({
+                        teamData: res.data.reverse()
+                    })
+
+                })
+                .catch((error) => {
+                    console.error(error)
+                })
+        } else {
+            alert('No token here')
+        }
     }
     
 
@@ -119,9 +155,11 @@ class TeamManagement extends Component {
                                                 </thead>
                                                 <tbody>
                                                 
-                                                    <tr>
-                                                        <td>Beta</td>
-                                                        <td><span className="disapproved">Deactive</span></td>
+                                                    {
+                                                        this.state.teamData.map((team_data, index) => 
+                                                        <tr key={index}>
+                                                        <td>{team_data.name}</td>
+                                                        <td><span className="disapproved">{team_data.status === true ? 'Active' : 'Deactive'}</span></td>
                                                         <td><a href="#" className="badge badge-info" data-toggle="modal" data-target="#BetaModal">details</a></td>
                                                         <td className="text-nowrap"> 
                                                             <div>
@@ -134,21 +172,9 @@ class TeamManagement extends Component {
                                                             </div>
                                                         </td>
                                                     </tr>
-                                                    <tr>
-                                                        <td>Sigma</td>
-                                                        <td><span className="approved">Active</span></td>
-                                                        <td><a href="#" className="badge badge-info" data-toggle="modal" data-target="#SigmaModal">details</a></td>
-                                                        <td className="text-nowrap">
-                                                            <div>
-                                                                <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
-                                                                    <i className="fa fa-trash-o" />
-                                                                </button>
-                                                                <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
-                                                                    <i className="fa fa-pencil" />
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                        )
+                                                   }
+                                            
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>

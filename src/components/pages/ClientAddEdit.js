@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
+import axiosInstance from '../../intercept';
+
 class ClientAddEdit extends Component {
     constructor(props) {
         super(props);
@@ -66,7 +68,7 @@ class ClientAddEdit extends Component {
 
     }
 
-    addClientData = (e) => {
+    addClientData = async(e) => {
         alert('hi')
         e.preventDefault()
         const obj = {
@@ -84,7 +86,7 @@ class ClientAddEdit extends Component {
         console.log(token.token);
         if (token) {
             console.log('105 line');
-            axios.post('/api/clients/', obj, {
+           await axiosInstance.post('/clients/', obj, {
                 headers: {
                     'Authorization': `token ${token.token}`
                 }
@@ -92,17 +94,28 @@ class ClientAddEdit extends Component {
             })
                 .then((res) => {
                     console.log(res.data)
+                    this.setState({
+                        name: "",
+                        address: "",
+                        contact_info: "",
+                        email_address: "",
+                        phone: "",
+                        status: ""
+                    })
 
                 })
                 .catch((error) => {
                     console.error(error)
                 })
+        } else {
+            alert('Invalid token')
         }
+       
 
     }
 
     render() {
-       
+       console.log('118',this.props.client_object);
         return (
             <div>
 
@@ -122,7 +135,7 @@ class ClientAddEdit extends Component {
                                 </button>
                             </div>
                             <div className="modal-body">
-                                <form onSubmit={this.addClientData}>
+                                <form >
                                     <div className="form-row">
                                         <div className="col-md-4">
                                             <div className="form-group">
@@ -188,7 +201,7 @@ class ClientAddEdit extends Component {
                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">
                                     Close
                 </button>
-                                <button type="button" className="btn btn-info btn-base">
+                                <button type="button" className="btn btn-info btn-base" onClick={this.addClientData}>
                                     Save changes
                 </button>
                             </div>
