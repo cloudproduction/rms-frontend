@@ -7,7 +7,13 @@ class UserManagement extends Component {
 
         super(props)
         this.state = {
-            userData: []
+            userData: [],
+            username: "",
+            email: "",
+            password: "",
+            first_name: "",
+            last_name: "",
+            groups: []
         }
     }
 

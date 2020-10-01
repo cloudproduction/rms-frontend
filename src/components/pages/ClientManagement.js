@@ -3,9 +3,11 @@ import React, { Component } from 'react';
 import ClientAddEdit from './ClientAddEdit';
 import axiosInstance from '../../intercept';
 
+
 class ClientManagement extends Component {
     constructor(props) {
         const token = localStorage.getItem("token")
+        
         super(props);
         this.state = {
             clientData: [],
@@ -154,8 +156,8 @@ class ClientManagement extends Component {
                                                                         <button className="btn btn-sm btn-edit mr-2" data-toggle="modal" data-target="#AkashModal">
                                                                             <i className="fas fa-eye" title="View Details" />
                                                                         </button>
-
-                                                                        <button onClick={() => this.deleteUser(clien_data.id)} className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
+                                                                       
+                                                                        <button  onClick={() => {if(window.confirm('Are you sure to delete this record?')){ this.deleteUser(clien_data.id)};}} className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
                                                                             <i className="fa fa-trash-o" />
                                                                         </button>
                                                                         <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#">

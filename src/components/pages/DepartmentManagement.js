@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import axiosInstance from '../../intercept';
+import DepartmentAddEdit from './DepartmentAddEdit';
 
 class DepartmentManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            deptData: []
+            deptData: [],
+            addModalShow: false,
+            
         };
     }
+
+  
 
     componentDidMount() {
         this.loadUsers();
@@ -43,7 +48,24 @@ class DepartmentManagement extends Component {
         }
     }
 
+    deleteDept = async id => {
+        const token = JSON.parse(window.localStorage.getItem('token'))
+        if(token) {
+            await axiosInstance.delete(`/departments/${id}`, {
+               
+                headers: {
+                    'Authorization': `token ${token.token}`
+                }
+            }
+            );
+            this.loadUsers();
+          };
+    
+   }
+
     render() {
+        let addModalClose = () => this.setState({ addModalShow: false })
+        console.log(this.state.addModalShow);
         return (
             <div>
                 <div className="layout_content">
@@ -58,43 +80,16 @@ class DepartmentManagement extends Component {
                                                 <h2 className="mb-0">
                                                 </h2><h3 className="float-left"><i id="addIcon" className="fa fa-chevron-circle-down" style={{ font: 15 }} /> Department management
                   </h3>
-                                                <button type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" className="btn btn-sm btn-info btn-base float-right">
+                                                <button type="button" data-toggle="modal" data-target="#formModal"
+                                                    aria-expanded="true"
+                                                    aria-controls="collapseOne"
+                                                    className="btn btn-sm btn-info btn-base float-right"
+                                                    onClick={() => this.setState({ addModalShow: true })}>
                                                     <i className="fa fa-plus-square-o" />&nbsp;
                     Add New
                   </button>
                                             </div>
-                                            <div id="collapseOne" className="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                                                <div className="card-body">
-                                                    <form>
-                                                        <div className="form-row">
-                                                            <div className="col-md-5">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="exampleInputEmail1">Department Name</label>
-                                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-5">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="exampleFormControlSelect1">Status</label>
-                                                                    <select className="form-control">
-                                                                        <option value="active">Active</option>
-                                                                        <option value="deactive">Deactive</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-2">
-                                                                <div className="form-group">
-                                                                    <label htmlFor=" exampleFormControlSelect1"> &nbsp;</label>
-                                                                    <br />
-                                                                    <button type="submit" className="btn btn-block btn-info btn-base float-right ">
-                                                                        Submit
-                            </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -128,9 +123,10 @@ class DepartmentManagement extends Component {
                                                         <td><span className="approved">{dep_data.status=== true ? 'Active' : 'Deactive'}</span></td>
                                                         <td className="text-nowrap">
                                                             <div>
-                                                                <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
+                                                                <button onClick={() => {if(window.confirm('Are you sure to delete this record?')){ this.deleteDept(dep_data.id)};}} className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
                                                                     <i className="fa fa-trash-o" />
-                                                                </button>
+                                                                        </button>
+                                                                        
                                                                 <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
                                                                     <i className="fa fa-pencil" />
                                                                 </button>
@@ -154,51 +150,12 @@ class DepartmentManagement extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="modal fade" id="formModal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div className="modal-dialog modal-lg" role="document">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h5 className="modal-title" id="exampleModalLabel">
-                                                Edit Department
-                </h5>
-                                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">
-                                                    ×
-                  </span>
-                                            </button>
-                                        </div>
-                                        <div className="modal-body">
-                                            <form>
-                                                <div className="form-row">
-                                                    <div className="col-md-6">
-                                                        <div className="form-group">
-                                                            <label htmlFor="exampleInputEmail1">Department Name</label>
-                                                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-6">
-                                                        <div className="form-group">
-                                                            <label htmlFor="exampleFormControlSelect1">Status</label>
-                                                            <select className="form-control">
-                                                                <option value="active">Active</option>
-                                                                <option value="active">Deactive</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div className="modal-footer">
-                                            <button type="button" className="btn btn-secondary" data-dismiss="modal">
-                                                Close
-                </button>
-                                            <button type="button" className="btn btn-info btn-base">
-                                                Save changes
-                </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
+                            <DepartmentAddEdit
+                            show={this.state.addModalShow}
+                            onHide={addModalClose}
+                            />
+                            
                         </div>
                     </div>
                 </div>

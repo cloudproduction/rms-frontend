@@ -41,19 +41,41 @@ class Dashboard extends Component {
      
    }
 
-   logout = (e) => {
-      alert('logout method fire')
-      axiosInstance.get('/logout/')
-         .then(resp => { 
-            console.log('logout');
-            this.props.history.push('/')
-         })
+   // logout = (e) => {
+   //    window.confirm('Are you  sure logout the system ?')
+   //    // axiosInstance.get('/logout/')
+   //    //    .then(resp => { 
+   //    //       console.log('logout');
+   //    //       this.props.history.push('/')
+   //    //    })
     
-      // window.localStorage.removeItem("token")
-   }
+   //   window.localStorage.removeItem("token")
+      
+   //    this.props.history.push('/')
+
+   // }
 
   
+   logout = async (e) => {
+      const token = JSON.parse(window.localStorage.getItem('token'))
+      console.log(token.token);
+      if (token) {
 
+          await axiosInstance.get(`/logout/`, {
+             
+              headers: {
+                  'Authorization': `token ${token.token}`
+              }
+          }).then(
+             resp => {
+                console.log('logout');
+                window.localStorage.removeItem("token")
+                this.props.history.push('/')
+             }
+          );
+        };
+  
+ }
 
    render() {
 

@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
 import axiosInstance from '../../intercept';
+React = require('react');
+React.Bootstrap = require('react-bootstrap');
+React.Bootstrap.Select = require('react-bootstrap-select');
+
+// import { selectpicker} from 'react-bootstrap'
 
 
 class TeamManagement extends Component {
@@ -81,7 +86,7 @@ class TeamManagement extends Component {
                                                                     Members
                           </label>
                                                                 <br />
-                                                                <select className="selectpicker" multiple data-live-search="true">
+                                                                <React.Bootstrap.Select className="selectpicker" multiple data-live-search="true">
                                                                     <option value="Mu">Munna</option>
                                                                     <option value="Ha">Hasan</option>
                                                                     <option value="Km">kamrul</option>
@@ -90,7 +95,7 @@ class TeamManagement extends Component {
                                                                     <option value="Km">kamrul</option>
                                                                     <option value="Km">kamrul</option>
                                                                     <option value="Km">kamrul</option>
-                                                                </select>
+                                                                </React.Bootstrap.Select>
                                                             </div>
                                                             {/* 
                                                   <option value="Km">kamrul</option>

@@ -17,6 +17,7 @@ class Login extends Component {
         this.state = {
             username: '',
             password: '',
+            message: '',
             loggedIn
         }
         this.onInputChange = this.onInputChange.bind(this)
@@ -80,7 +81,8 @@ class Login extends Component {
                 localStorage.setItem("token", JSON.stringify(response.data))
                 
                 this.setState({
-                    loggedIn: true
+                    loggedIn: true,
+                   
                 })
             } else {
 
@@ -91,6 +93,9 @@ class Login extends Component {
             .catch(err => {
                 // what now?
                 console.log(err);
+                this.setState({
+                    message:err.response.data.non_field_errors
+                })
               
             })
 
@@ -101,6 +106,17 @@ class Login extends Component {
         if (this.state.loggedIn) {
             return <Redirect to="/dashboard" />
         }
+
+        let error = ''
+
+        if (this.state.message) {
+            error = (
+                <div className="alert alert-danger" style={{fontSize: '14px'}} role="alert">
+            {this.state.message}
+             </div>
+           )    
+        }
+
         return (
             <div className="login-bg-color">
                 <div className="container">
@@ -112,6 +128,7 @@ class Login extends Component {
                                 <div className="logo-login">RMS</div>
                                 {/* Form */}
                                 <h3>User Login:</h3>
+                                {error}
                                 <form className="text-center" onSubmit={this.submitForm}>
                                     <div className="form-group">
                                         <input type="text" id="materialLoginFormEmail" name="username"

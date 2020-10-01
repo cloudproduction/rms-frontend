@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
 // import axios from 'axios';
 import axiosInstance from '../../intercept';
+import ValidationError from '../ValidationError'
+import InvalidFeedBack from '../partials/ErrorStyle'
 
 class ClientAddEdit extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            client_name: "",
+            name: "",
             address: "",
             contact_info: "",
             email_address: "",
             phone: "",
             status: true,
-            post_status: ''
+            error_message: {
+
+            },
         };
         this.onChangeClientName = this.onChangeClientName.bind(this);
         this.onChangeAddress = this.onChangeAddress.bind(this);
@@ -25,7 +29,7 @@ class ClientAddEdit extends Component {
 
     onChangeClientName(e) {
         this.setState({
-            client_name: e.target.value
+            name: e.target.value
         });
     }
 
@@ -68,11 +72,11 @@ class ClientAddEdit extends Component {
 
     }
 
-    addClientData = async(e) => {
+    addClientData = async (e) => {
         alert('hi')
         e.preventDefault()
         const obj = {
-            name: this.state.client_name,
+            name: this.state.name,
             address: this.state.address,
             contact_info: this.state.contact_info,
             email: this.state.email_address,
@@ -86,7 +90,7 @@ class ClientAddEdit extends Component {
         console.log(token.token);
         if (token) {
             console.log('105 line');
-           await axiosInstance.post('/clients/', obj, {
+            await axiosInstance.post('/clients/', obj, {
                 headers: {
                     'Authorization': `token ${token.token}`
                 }
@@ -99,23 +103,53 @@ class ClientAddEdit extends Component {
                         address: "",
                         contact_info: "",
                         email_address: "",
-                        phone: "",
-                        status: ""
+                        phone: ""
                     })
 
                 })
                 .catch((error) => {
-                    console.error(error)
+                    console.error('15', error)
+                    // console.log('116',error.response.data.name[0]);
+                    this.setState({
+                        error_message: error.response.data
+                    })
+
+                    // Object.keys(this.state.error_message).map(index => 
+                    //     // console.log(typeof this.props.error_message[index])
+
+                    //         Object.keys(this.state.error_message[index]).map((i) =>
+                    //             // <li className="alert alert-danger" key={i}>{this.state.error_message[index][i]}</li>
+                    //             this.setState(state => {
+                    //                 state.validation[this.state.error_message[index][i]] 
+                    //         })
+                    //             )
+                    //     )
+
                 })
         } else {
             alert('Invalid token')
         }
-       
+
 
     }
 
+
     render() {
-       console.log('118',this.props.client_object);
+        // (this.state.error_message.hasOwnProperty('name') && "is-invalid")
+        let className = ''
+        if (this.state.error_message.hasOwnProperty('name')) {
+            className += "is-invalid"
+        } else if (this.state.error_message.hasOwnProperty('address')) {
+            className += "is-invalid"
+        } else if (this.state.error_message.hasOwnProperty('contact_info')) {
+            className += "is-invalid"
+        } else if (this.state.error_message.hasOwnProperty('email')) {
+            className += "is-invalid"
+        } else if (this.state.error_message.hasOwnProperty('phone_no')) {
+            className += "is-invalid"
+        }
+       
+           
         return (
             <div>
 
@@ -124,11 +158,11 @@ class ClientAddEdit extends Component {
                         <div className="modal-content">
                             <div className="modal-header">
                                 <h5 className="modal-title" id="exampleModalLabel">
-                                    Edit Client
+                                    Add Client
                 </h5>
                                 <button type="button" className="close"
                                     data-dismiss="modal" aria-label="Close"
-                                onClick= {this.props.onHide}>
+                                    onClick={this.props.onHide}>
                                     <span aria-hidden="true">
                                         ×
                   </span>
@@ -136,32 +170,43 @@ class ClientAddEdit extends Component {
                             </div>
                             <div className="modal-body">
                                 <form >
+
+                              
                                     <div className="form-row">
                                         <div className="col-md-4">
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputEmail1"> Client Name</label>
-                                                <input type="text" className="form-control"
-                                                    id="client_name" aria-describedby="emailHelp"
+                                                <input type="text" className={"form-control "+className}
+                                                    id="name" aria-describedby="emailHelp"
                                                     onChange={this.onChangeClientName}
-                                                    value={this.state.client_name} />
+                                                    value={this.state.name} />
+                                                {this.state.error_message.hasOwnProperty('name') && <InvalidFeedBack message={this.state.error_message.name[0]} />}
+
+
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputEmail1"> Address</label>
-                                                <input type="text" className="form-control"
+                                                <input type="text" className={"form-control " +className}
                                                     id="address" aria-describedby="emailHelp"
                                                     onChange={this.onChangeAddress}
                                                     value={this.state.address} />
+
+                                                {this.state.error_message.hasOwnProperty('address') && <InvalidFeedBack message={this.state.error_message.address[0]} />}
+
+
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputEmail1">Contact Info</label>
-                                                <input type="text" className="form-control"
+                                                <input type="text" className={"form-control "+className}
                                                     id="exampleInputEmail1" aria-describedby="emailHelp"
                                                     onChange={this.onChangeContact}
                                                     value={this.state.contact_info} />
+                                              {this.state.error_message.hasOwnProperty('contact_info') && <InvalidFeedBack message={this.state.error_message.contact_info[0]} />}
+
                                             </div>
                                         </div>
                                     </div>
@@ -169,29 +214,34 @@ class ClientAddEdit extends Component {
                                         <div className="col-md-4">
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputEmail1">Emial address</label>
-                                                <input type="email" className="form-control"
+                                                <input type="email" className={"form-control "+className}
                                                     id="exampleInputEmail1" aria-describedby="emailHelp"
                                                     onChange={this.onChangeEmail}
                                                     value={this.state.email_address} />
+                                 {this.state.error_message.hasOwnProperty('email') && <InvalidFeedBack message={this.state.error_message.email[0]} />}
+
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group">
                                                 <label htmlFor="exampleInputEmail1">Phone no </label>
-                                                <input type="text" className="form-control"
+                                                <input type="text" className={"form-control "+className}
                                                     id="phone" aria-describedby="emailHelp"
                                                     onChange={this.onChangePhone}
                                                     value={this.state.phone} />
+           {this.state.error_message.hasOwnProperty('phone_no') && <InvalidFeedBack message={this.state.error_message.phone_no[0]} />}
+
                                             </div>
                                         </div>
                                         <div className="col-md-4">
                                             <div className="form-group">
                                                 <label htmlFor="exampleFormControlSelect1">Status</label>
                                                 <select className="form-control" id="exampleFormControlSelect1" onChange={this.onChangeStatus}>
-                                                    <option >Select Status</option>
+                                                    <option value ="">Select Status</option>
                                                     <option value="Active">Active</option>
                                                     <option value="Deactive">Deactive</option>
                                                 </select>
+
                                             </div>
                                         </div>
                                     </div>
@@ -201,8 +251,9 @@ class ClientAddEdit extends Component {
                                 <button type="button" className="btn btn-secondary" data-dismiss="modal">
                                     Close
                 </button>
-                                <button type="button" className="btn btn-info btn-base" onClick={this.addClientData}>
-                                    Save changes
+                                <button type="button" className="btn btn-info btn-base" onClick={this.addClientData}
+                                >
+                                    Submit
                 </button>
                             </div>
                         </div>
@@ -212,6 +263,8 @@ class ClientAddEdit extends Component {
             </div>
         );
     }
+
 }
 
 export default ClientAddEdit;
+
