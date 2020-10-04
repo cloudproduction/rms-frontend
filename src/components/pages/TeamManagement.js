@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import axiosInstance from '../../intercept';
-React = require('react');
-React.Bootstrap = require('react-bootstrap');
-React.Bootstrap.Select = require('react-bootstrap-select');
+// React = require('react');
+// React.Bootstrap = require('react-bootstrap');
+// React.Bootstrap.Select = require('react-bootstrap-select');
 
 // import { selectpicker} from 'react-bootstrap'
 
@@ -27,7 +27,7 @@ class TeamManagement extends Component {
         const token = JSON.parse(window.localStorage.getItem('token'))
         console.log(token.token);
         if (token) {
-            console.log('105 line');
+
             axiosInstance.get('/teams/', {
                 headers: {
                     'Authorization': `token ${token.token}`
@@ -35,7 +35,7 @@ class TeamManagement extends Component {
 
             })
                 .then((res) => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     this.setState({
                         teamData: res.data.reverse()
                     })
@@ -86,7 +86,7 @@ class TeamManagement extends Component {
                                                                     Members
                           </label>
                                                                 <br />
-                                                                <React.Bootstrap.Select className="selectpicker" multiple data-live-search="true">
+                                                                <select className="selectpicker" multiple data-live-search="true">
                                                                     <option value="Mu">Munna</option>
                                                                     <option value="Ha">Hasan</option>
                                                                     <option value="Km">kamrul</option>
@@ -95,7 +95,7 @@ class TeamManagement extends Component {
                                                                     <option value="Km">kamrul</option>
                                                                     <option value="Km">kamrul</option>
                                                                     <option value="Km">kamrul</option>
-                                                                </React.Bootstrap.Select>
+                                                                </select>
                                                             </div>
                                                             {/* 
                                                   <option value="Km">kamrul</option>

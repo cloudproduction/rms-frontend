@@ -4,6 +4,7 @@ import ClientAddEdit from './ClientAddEdit';
 import axiosInstance from '../../intercept';
 
 
+
 class ClientManagement extends Component {
     constructor(props) {
         const token = localStorage.getItem("token")
@@ -18,7 +19,8 @@ class ClientManagement extends Component {
             contact_info: "",
             email_address: "",
             phone: "",
-            status: ""
+            status: "",
+          
             }
         }
 
@@ -34,15 +36,10 @@ class ClientManagement extends Component {
 
     loadUsers = () => {
 
-        // axiosInstance.get('/clients/').then(
-        //         res => {
-        //             console.log(res.data);
-        //     }
-        // )
         const token = JSON.parse(window.localStorage.getItem('token'))
         console.log(token.token);
         if (token) {
-            console.log('105 line');
+            
             axiosInstance.get('/clients/', {
                 headers: {
                     'Authorization': `token ${token.token}`
@@ -50,7 +47,7 @@ class ClientManagement extends Component {
 
             })
                 .then((res) => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     this.setState({
                         clientData: res.data.reverse()
                     })
@@ -80,8 +77,21 @@ class ClientManagement extends Component {
     
    }
 
+    open = () => {
+        alert('hi')
+        this.setState({
+           addModalShow:true
+       })
+
+    }
     // componentDidUpdate() {
     //     this.loadUsers();
+    // }
+
+    // getModalClasses() {
+    //     let classes = "modal fade ";
+    //     classes += (this.state.addModalShow === true) ? "badge-warning" : "badge-primary";
+    //     return classes;
     // }
 
     render() {
@@ -105,7 +115,7 @@ class ClientManagement extends Component {
                   </h3>
                                                 <button type="button" data-toggle="modal" data-target="#formModal" aria-expanded="true" aria-controls="collapseOne"
                                                     className="btn btn-sm btn-info btn-base float-right"
-                                                    onClick={() => this.setState({ addModalShow: true })}>
+                                                    onClick={this.open}>
                                                     <i className="fa fa-plus-square-o" />&nbsp;
                     Add New
                   </button>
@@ -160,7 +170,7 @@ class ClientManagement extends Component {
                                                                         <button  onClick={() => {if(window.confirm('Are you sure to delete this record?')){ this.deleteUser(clien_data.id)};}} className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
                                                                             <i className="fa fa-trash-o" />
                                                                         </button>
-                                                                        <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#">
+                                                                        <button to={`/edit/${clien_data.id}`} className="btn btn-sm btn-edit" data-toggle="modal" data-target="#">
                                                                             <i className="fa fa-pencil" />
                                                                         </button>
                                                                     </div>
@@ -187,11 +197,13 @@ class ClientManagement extends Component {
                                 </div>
                             </div>
                             <ClientAddEdit
-                                show={this.state.addModalShow}
+                                // show={this.state.addModalShow}
+                                open={this.open}
                                 onHide={addModalClose}
                                 client_object={this.state.client_object}
                             />
-
+                            
+                           
                             {/* view modal start  */}
 
                             <div className="modal fade" id="AkashModal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

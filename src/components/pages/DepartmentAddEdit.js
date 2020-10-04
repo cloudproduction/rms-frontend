@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axiosInstance from '../../intercept';
+import ModalHeader from '../partials/ModalHeader';
 
 class DepartmentAddEdit extends Component {
     constructor(props) {
@@ -45,7 +46,7 @@ class DepartmentAddEdit extends Component {
         const token = JSON.parse(window.localStorage.getItem('token'))
         console.log(token.token);
         if (token) {
-            console.log('105 line');
+            
            await axiosInstance.post('/departments/', obj, {
                 headers: {
                     'Authorization': `token ${token.token}`
@@ -53,7 +54,7 @@ class DepartmentAddEdit extends Component {
 
             })
                 .then((res) => {
-                    console.log(res.data)
+                    // console.log(res.data)
 
                 })
                 .catch((error) => {
@@ -78,9 +79,9 @@ class DepartmentAddEdit extends Component {
                     <div className="modal-dialog modal-lg" role="document">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLabel">
-                                    Add Department
-                </h5>
+
+                            <ModalHeader title="Add Department"/>
+
                                 <button type="button" className="close"
                                     data-dismiss="modal" aria-label="Close"
                                     onClick= {this.props.onHide}>

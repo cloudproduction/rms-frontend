@@ -26,7 +26,7 @@ class DepartmentManagement extends Component {
         const token = JSON.parse(window.localStorage.getItem('token'))
         console.log(token.token);
         if (token) {
-            console.log('105 line');
+            
             axiosInstance.get('/departments/', {
                 headers: {
                     'Authorization': `token ${token.token}`
@@ -34,7 +34,7 @@ class DepartmentManagement extends Component {
 
             })
                 .then((res) => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     this.setState({
                         deptData: res.data.reverse()
                     })
