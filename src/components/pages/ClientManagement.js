@@ -13,6 +13,7 @@ class ClientManagement extends Component {
         this.state = {
             clientData: [],
             addModalShow: false,
+            // addModalClose: false,
             client_object: {
             name: "ddddd",
             address: "",
@@ -20,6 +21,8 @@ class ClientManagement extends Component {
             email_address: "",
             phone: "",
             status: "",
+            editId: null
+            
           
             }
         }
@@ -88,15 +91,11 @@ class ClientManagement extends Component {
     //     this.loadUsers();
     // }
 
-    // getModalClasses() {
-    //     let classes = "modal fade ";
-    //     classes += (this.state.addModalShow === true) ? "badge-warning" : "badge-primary";
-    //     return classes;
-    // }
+ 
 
     render() {
 
-        let addModalClose = () => this.setState({ addModalShow: false })
+        // let addModalClose = () => this.setState({ addModalShow: false })
         console.log(this.state.addModalShow);
 
         return (
@@ -170,7 +169,7 @@ class ClientManagement extends Component {
                                                                         <button  onClick={() => {if(window.confirm('Are you sure to delete this record?')){ this.deleteUser(clien_data.id)};}} className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
                                                                             <i className="fa fa-trash-o" />
                                                                         </button>
-                                                                        <button to={`/edit/${clien_data.id}`} className="btn btn-sm btn-edit" data-toggle="modal" data-target="#">
+                                                                        <button onClick={() => this.clientEdit(clien_data.id)} className="btn btn-sm btn-edit" data-toggle="modal" data-target="#">
                                                                             <i className="fa fa-pencil" />
                                                                         </button>
                                                                     </div>
@@ -197,9 +196,9 @@ class ClientManagement extends Component {
                                 </div>
                             </div>
                             <ClientAddEdit
-                                // show={this.state.addModalShow}
-                                open={this.open}
-                                onHide={addModalClose}
+                                openModal={this.state.addModalShow}
+                                edit={true}
+                                // addModalClose={this.state.addModalClose}
                                 client_object={this.state.client_object}
                             />
                             

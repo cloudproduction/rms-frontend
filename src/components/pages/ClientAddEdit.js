@@ -20,7 +20,8 @@ class ClientAddEdit extends Component {
             error_message: {
 
             },
-            msg_success: ""
+            msg_success: "",
+            closeModalState: false
         };
         this.onChangeClientName = this.onChangeClientName.bind(this);
         this.onChangeAddress = this.onChangeAddress.bind(this);
@@ -133,20 +134,23 @@ class ClientAddEdit extends Component {
     }
 
     CloseModal = () => {
-        // alert('hi')
+        alert('close Button')
         this.setState({
-            name: "",
-            address: "",
-            contact_info: "",
-            email_address: "",
-            phone: "",
-            msg_success: "",
-            error_message: {}
+            // name: "",
+            // address: "",
+            // contact_info: "",
+            // email_address: "",
+            // phone: "",
+            // msg_success: "",
+            // error_message: {},
+            closeModalState: false
+
         })
     }
 
     render() {
-        // (this.state.error_message.hasOwnProperty('name') && "is-invalid")
+        // console.log('152', this.state.closeModalState);
+        console.log('153', this.props.edit);
         let className = ''
         if (this.state.error_message.hasOwnProperty('name')) {
             className += "is-invalid"
@@ -159,12 +163,12 @@ class ClientAddEdit extends Component {
         } else if (this.state.error_message.hasOwnProperty('phone_no')) {
             className += "is-invalid"
         }
-        console.log(this.state.msg_success);
-        console.log('163',this.props.open);
+        // console.log(this.state.msg_success);
+        // console.log('163',this.state.closeModalState);
         return (
             <div>
 
-                <BootstrapModal>
+                <BootstrapModal openModal={this.props.openModal} CloseModal={this.state.closeModalState}>
                     <form>
                         {
                             this.state.msg_success &&
@@ -246,23 +250,34 @@ class ClientAddEdit extends Component {
 
                             <div className="col-md-3 offset-md-9">
                                 <div className="form-group">
-                                    <button type="button" className="btn btn-secondary"
+                                    <button type="button" className="btn btn-secondary" style={{ 'marginRight': '3px', 'marginLeft': '25px' }}
                                         data-dismiss="modal"
                                         onClick={this.CloseModal}  >
                                         Close
                 </button>
-                                    <button type="button" className="btn btn-info btn-base" onClick={this.addClientData}
-                                    >
-                                        Submit
-                </button>
+                                    {this.props.edit === true ?
+                                        <button type="button" className="btn btn-info btn-base" onClick={this.addClientData}
+                                        >
+                                            Submit
+                </button> : ''}
+
+                                    {this.props.add === true ?
+                                        <button type="button" className="btn btn-info btn-base" onClick={this.addClientData}
+                                        >
+                                            Submit
+                </button> : ''}
+
+
                                 </div>
                             </div>
-                            
+
 
                         </div>
                     </form>
 
                 </BootstrapModal>
+
+
             </div>
         );
     }

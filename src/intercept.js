@@ -17,7 +17,7 @@ import axios from "axios";
    
   
   // });
-console.log('file fired once a time');
+// console.log('file fired once a time');
 // const token = JSON.parse(window.localStorage.getItem('token'))
 // if (token) {
 //    axiosInstance.interceptors.request.use(function (config) {
