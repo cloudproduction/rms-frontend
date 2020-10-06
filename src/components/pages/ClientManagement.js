@@ -8,23 +8,16 @@ import axiosInstance from '../../intercept';
 class ClientManagement extends Component {
     constructor(props) {
         const token = localStorage.getItem("token")
-        
+
         super(props);
         this.state = {
             clientData: [],
             addModalShow: false,
             // addModalClose: false,
-            client_object: {
-            name: "ddddd",
-            address: "",
-            contact_info: "",
-            email_address: "",
-            phone: "",
-            status: "",
-            editId: null
+            editId: null,
+            editFlag: false,
+            addFlag: false
             
-          
-            }
         }
 
     }
@@ -35,14 +28,14 @@ class ClientManagement extends Component {
         this.loadUsers();
     }
 
-    
+
 
     loadUsers = () => {
 
         const token = JSON.parse(window.localStorage.getItem('token'))
-        console.log(token.token);
+        // console.log(token.token);
         if (token) {
-            
+
             axiosInstance.get('/clients/', {
                 headers: {
                     'Authorization': `token ${token.token}`
@@ -64,39 +57,45 @@ class ClientManagement extends Component {
         }
     }
 
-    
+
     deleteUser = async id => {
         const token = JSON.parse(window.localStorage.getItem('token'))
-        if(token) {
+        if (token) {
             await axiosInstance.delete(`/clients/${id}`, {
-               
+
                 headers: {
                     'Authorization': `token ${token.token}`
                 }
             }
             );
             this.loadUsers();
-          };
-    
-   }
-
-    open = () => {
-        alert('hi')
-        this.setState({
-           addModalShow:true
-       })
+        };
 
     }
-    // componentDidUpdate() {
-    //     this.loadUsers();
-    // }
+
+    open = () => {
+        alert('open')
+        this.setState({
+            addModalShow: true,
+            addFlag:true
+        })
+
+    }
+
+    clientEdit = async(id) => {
+       
+        this.setState({
+            editId: id,
+            editFlag: true,
+            addModalShow: true
+        })
+       
+    }
 
  
-
     render() {
 
-        // let addModalClose = () => this.setState({ addModalShow: false })
-        console.log(this.state.addModalShow);
+     
 
         return (
             <div>
@@ -165,8 +164,8 @@ class ClientManagement extends Component {
                                                                         <button className="btn btn-sm btn-edit mr-2" data-toggle="modal" data-target="#AkashModal">
                                                                             <i className="fas fa-eye" title="View Details" />
                                                                         </button>
-                                                                       
-                                                                        <button  onClick={() => {if(window.confirm('Are you sure to delete this record?')){ this.deleteUser(clien_data.id)};}} className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
+
+                                                                        <button onClick={() => { if (window.confirm('Are you sure to delete this record?')) { this.deleteUser(clien_data.id) }; }} className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
                                                                             <i className="fa fa-trash-o" />
                                                                         </button>
                                                                         <button onClick={() => this.clientEdit(clien_data.id)} className="btn btn-sm btn-edit" data-toggle="modal" data-target="#">
@@ -195,14 +194,18 @@ class ClientManagement extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <ClientAddEdit
-                                openModal={this.state.addModalShow}
-                                edit={true}
-                                // addModalClose={this.state.addModalClose}
-                                client_object={this.state.client_object}
-                            />
-                            
+                            {this.state.addModalShow ?
                            
+                           <ClientAddEdit
+                           openModal={this.state.addModalShow}
+                           editFlag={this.state.editFlag}
+                           addFlag={this.state.addFlag}
+                           editId={this.state.editId}
+                       
+                                /> : null
+                            }
+
+
                             {/* view modal start  */}
 
                             <div className="modal fade" id="AkashModal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -233,7 +236,7 @@ class ClientManagement extends Component {
                                             </div>
                                             <div className="card-footer text-muted">
                                             </div>
-                                     
+
                                         </div>
                                     </div>
                                 </div>

@@ -4,7 +4,6 @@ import axiosInstance from '../../intercept';
 import ValidationError from '../ValidationError'
 import InvalidFeedBack from '../partials/ErrorStyle'
 import ModalHeader from '../partials/ModalHeader';
-import Modal from 'react-bootstrap4-modal';
 import BootstrapModal from '../partials/BootstrapModal';
 
 class ClientAddEdit extends Component {
@@ -16,12 +15,13 @@ class ClientAddEdit extends Component {
             contact_info: "",
             email_address: "",
             phone: "",
-            status: true,
+            status: "Active",
             error_message: {
 
             },
             msg_success: "",
-            closeModalState: false
+            closeModalState: false,
+            modalTitle:(this.props.addFlag=== true? 'Add Client' : 'Edit Client')
         };
         this.onChangeClientName = this.onChangeClientName.bind(this);
         this.onChangeAddress = this.onChangeAddress.bind(this);
@@ -86,7 +86,7 @@ class ClientAddEdit extends Component {
             contact_info: this.state.contact_info,
             email: this.state.email_address,
             phone_no: this.state.phone,
-            status: this.state.status
+            status: (this.state.status==='Active' ? true : false)
 
         };
 
@@ -148,9 +148,125 @@ class ClientAddEdit extends Component {
         })
     }
 
+    // edit function area start 
+    componentDidMount() {
+        console.log('153 line for test');
+         if (this.props.editFlag === true) {
+            this.editLoaderData()
+            console.log('testing');
+        } else {
+            console.log('no edit data call');
+        }
+    }
+
+
+    editLoaderData = async() => {
+
+        const token = JSON.parse(window.localStorage.getItem('token'))
+
+        if (token) {
+
+           await axiosInstance.get(`/clients/${this.props.editId}`, {
+                headers: {
+                    'Authorization': `token ${token.token}`
+                }
+
+            })
+                .then((res) => {
+                    console.log(res.data)
+
+                    // console.log('data add success');
+                    this.setState({
+                        name: res.data.name,
+                        address: res.data.address,
+                        contact_info: res.data.contact_info,
+                        email_address: res.data.email,
+                        phone:res.data.phone_no,
+                        status:(res.data.status===true ? 'Active' : 'Deactive')
+                    })
+
+
+
+                })
+                .catch((error) => {
+                    // console.error('15', error)
+                    // console.log('116',error.response.data.name[0]);
+
+                    this.setState({
+                        error_message: error.response.data
+                    })
+
+                })
+        } else {
+            alert('Invalid token')
+        }
+    }
+
+    updateClientData = async (e) => {
+
+        e.preventDefault()
+        const obj = {
+            name: this.state.name,
+            address: this.state.address,
+            contact_info: this.state.contact_info,
+            email: this.state.email_address,
+            phone_no: this.state.phone,
+            status:(this.state.status==='Active' ? true : false)
+
+        };
+
+        const token = JSON.parse(window.localStorage.getItem('token'))
+        console.log(token.token);
+        if (token) {
+
+            await axiosInstance.put(`/clients/${this.props.editId}/`, obj, {
+                headers: {
+                    'Authorization': `token ${token.token}`
+                }
+
+            })
+                .then((res) => {
+                    // console.log(res.data)
+                    if (res.status === 200) {
+                        console.log('data add success');
+                        this.setState({
+                            name: "",
+                            address: "",
+                            contact_info: "",
+                            email_address: "",
+                            phone: "",
+                            msg_success: "Data Updated Successfully"
+                        })
+                    }
+
+
+                })
+                .catch((error) => {
+                    // console.error('15', error)
+                    // console.log('116',error.response.data.name[0]);
+
+                    this.setState({
+                        error_message: error.response.data
+                    })
+
+                })
+        } else {
+            alert('Invalid token')
+        }
+
+
+    }
+
+    componentWillUnmount() {
+        alert('Destroy')
+        console.log('component will hidden now');
+        
+    }
+
     render() {
-        // console.log('152', this.state.closeModalState);
-        console.log('153', this.props.edit);
+        
+       
+
         let className = ''
         if (this.state.error_message.hasOwnProperty('name')) {
             className += "is-invalid"
@@ -163,12 +279,13 @@ class ClientAddEdit extends Component {
         } else if (this.state.error_message.hasOwnProperty('phone_no')) {
             className += "is-invalid"
         }
-        // console.log(this.state.msg_success);
-        // console.log('163',this.state.closeModalState);
+       
+
+
         return (
             <div>
 
-                <BootstrapModal openModal={this.props.openModal} CloseModal={this.state.closeModalState}>
+                <BootstrapModal openModal={this.props.openModal} CloseModal={this.state.closeModalState} modalTitle={this.state.modalTitle}>
                     <form>
                         {
                             this.state.msg_success &&
@@ -239,8 +356,8 @@ class ClientAddEdit extends Component {
                             <div className="col-md-4">
                                 <div className="form-group">
                                     <label htmlFor="exampleFormControlSelect1">Status</label>
-                                    <select className="form-control" id="exampleFormControlSelect1" onChange={this.onChangeStatus}>
-                                        <option value="">Select Status</option>
+                                    <select className="form-control" id="exampleFormControlSelect1" onChange={this.onChangeStatus} defaultValue={this.state.status}>
+            
                                         <option value="Active">Active</option>
                                         <option value="Deactive">Deactive</option>
                                     </select>
@@ -248,20 +365,20 @@ class ClientAddEdit extends Component {
                                 </div>
                             </div>
 
-                            <div className="col-md-3 offset-md-9">
-                                <div className="form-group">
-                                    <button type="button" className="btn btn-secondary" style={{ 'marginRight': '3px', 'marginLeft': '25px' }}
+                            <div className="col-md-3">
+                                <div className="form-group text-center">
+                                    {/* <button type="button" className="btn btn-secondary" style={{ 'marginRight': '3px', 'marginLeft': '25px' }}
                                         data-dismiss="modal"
                                         onClick={this.CloseModal}  >
                                         Close
-                </button>
-                                    {this.props.edit === true ?
-                                        <button type="button" className="btn btn-info btn-base" onClick={this.addClientData}
+                </button> */}
+                                    {this.props.editFlag === true ?
+                                        <button type="button" className="btn btn-info btn-base" onClick={this.updateClientData}
                                         >
                                             Submit
                 </button> : ''}
 
-                                    {this.props.add === true ?
+                                    {this.props.addFlag === true ?
                                         <button type="button" className="btn btn-info btn-base" onClick={this.addClientData}
                                         >
                                             Submit

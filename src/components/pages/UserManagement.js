@@ -27,9 +27,9 @@ class UserManagement extends Component {
 
         
         const token = JSON.parse(window.localStorage.getItem('token'))
-        console.log(token.token);
+        
         if (token) {
-            console.log('105 line');
+            
             axiosInstance.get('/users/', {
                 headers: {
                     'Authorization': `token ${token.token}`
@@ -37,7 +37,7 @@ class UserManagement extends Component {
 
             })
                 .then((res) => {
-                    console.log(res.data)
+                   
                     this.setState({
                         userData: res.data.reverse()
                     })
