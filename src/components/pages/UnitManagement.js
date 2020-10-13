@@ -8,21 +8,22 @@ class UnitManagement extends Component {
         this.state = {
             unitData: [],
             addModalShow: false,
+            editId: null,
+            editFlag: false,
+            addFlag: false
         };
     }
     componentDidMount() {
         this.loadUsers();
     }
 
-    
+
 
     loadUsers = () => {
 
-        
+
         const token = JSON.parse(window.localStorage.getItem('token'))
-        console.log(token.token);
         if (token) {
-            console.log('105 line');
             axiosInstance.get('/units/', {
                 headers: {
                     'Authorization': `token ${token.token}`
@@ -30,7 +31,7 @@ class UnitManagement extends Component {
 
             })
                 .then((res) => {
-                    console.log(res.data)
+                    // console.log(res.data)
                     this.setState({
                         unitData: res.data.reverse()
                     })
@@ -44,9 +45,61 @@ class UnitManagement extends Component {
         }
     }
 
+
+    open = () => {
+        this.setState({
+            addModalShow: true,
+            addFlag: true
+        })
+
+    }
+
+    unitEdit = async (id) => {
+
+        this.setState({
+            editId: id,
+            editFlag: true,
+            addModalShow: true
+        })
+
+    }
+
+    modalHandler = () => {
+
+        if (this.state.addModalShow === true) {
+            this.setState({
+                addModalShow: false,
+                addFlag: false,
+                editFlag: false
+            })
+        } else {
+            this.setState({
+                addModalShow: true
+            })
+        }
+
+        document.getElementById('back_drop').style.cssText = 'display:none'
+
+    }
+
+
+    deleteUnit = async id => {
+        const token = JSON.parse(window.localStorage.getItem('token'))
+        if(token) {
+            await axiosInstance.delete(`/units/${id}`, {
+               
+                headers: {
+                    'Authorization': `token ${token.token}`
+                }
+            }
+            );
+            this.loadUsers();
+          };
+    
+    }
+
     render() {
-        let addModalClose = () => this.setState({ addModalShow: false })
-        console.log(this.state.addModalShow);
+
         return (
             <div>
                 <div className="layout_content">
@@ -60,17 +113,17 @@ class UnitManagement extends Component {
                                             <div className="card-header" id="headingOne">
                                                 <h2 className="mb-0">
                                                 </h2><h3 className="float-left"><i id="addIcon" className="fa fa-chevron-circle-down" style={{ font: 15 }} /> Unit management
-                  </h3>
-                                                <button type="button"
+                                                 </h3>
+                                                <button onClick={this.open} type="button"
                                                     data-toggle="modal" data-target="#formModal"
                                                     aria-expanded="true"
                                                     className="btn btn-sm btn-info btn-base float-right"
-                                                    onClick={() => this.setState({ addModalShow: true })}>
+                                                >
                                                     <i className="fa fa-plus-square-o" />&nbsp;
-                    Add New
-                  </button>
+                                                    Add New
+                                                </button>
                                             </div>
-                                            
+
                                         </div>
                                     </div>
                                 </div>
@@ -94,23 +147,23 @@ class UnitManagement extends Component {
                                                 <tbody>
                                                     {
                                                         this.state.unitData.map((unit_data, index) =>
-                                                        <tr key={index}>
-                                                        <td>{unit_data.name}</td>
-                                                        <td><span className="approved">{unit_data.status === true ? 'Active' : 'Pending'}</span></td>
-                                                        <td className="text-nowrap">
-                                                            <div>
-                                                                <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
-                                                                    <i className="fa fa-trash-o" />
-                                                                </button>
-                                                                <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#">
-                                                                    <i className="fa fa-pencil" />
-                                                                </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                            <tr key={index}>
+                                                                <td>{unit_data.name}</td>
+                                                                <td><span className="approved">{unit_data.status === true ? 'Active' : 'Deactive'}</span></td>
+                                                                <td className="text-nowrap">
+                                                                    <div>
+                                                                        <button onClick={() => {if(window.confirm('Are you sure to delete this record?')){ this.deleteUnit(unit_data.id)};}} className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
+                                                                            <i className="fa fa-trash-o" />
+                                                                        </button>
+                                                                        <button onClick={() => this.unitEdit(unit_data.id)} className="btn btn-sm btn-edit" data-toggle="modal" data-target="#">
+                                                                            <i className="fa fa-pencil" />
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
                                                         )
-                                                  }
-                                                 
+                                                    }
+
 
                                                 </tbody>
                                                 <tfoot>
@@ -128,12 +181,16 @@ class UnitManagement extends Component {
                         </div>
                     </div>
                 </div>
-
-                <UnitManagementAddEdit
-                  show={this.state.addModalShow}
-                    onHide={addModalClose}
-                />
-
+                {this.state.addModalShow ?
+                    <UnitManagementAddEdit
+                        openModal={this.state.addModalShow}
+                        editFlag={this.state.editFlag}
+                        addFlag={this.state.addFlag}
+                        editId={this.state.editId}
+                        loadUsers={this.loadUsers}
+                        modalHandler={this.modalHandler}
+                    /> : null
+                }
             </div>
 
         );

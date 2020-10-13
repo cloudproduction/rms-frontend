@@ -15,12 +15,11 @@ class ClientAddEdit extends Component {
             contact_info: "",
             email_address: "",
             phone: "",
-            status: "Active",
+            status: true,
             error_message: {
 
             },
             msg_success: "",
-            closeModalState: false,
             modalTitle:(this.props.addFlag=== true? 'Add Client' : 'Edit Client')
         };
         this.onChangeClientName = this.onChangeClientName.bind(this);
@@ -86,11 +85,11 @@ class ClientAddEdit extends Component {
             contact_info: this.state.contact_info,
             email: this.state.email_address,
             phone_no: this.state.phone,
-            status: (this.state.status==='Active' ? true : false)
+            status: this.state.status 
 
         };
 
-        console.log('data test', obj);
+        // console.log('data test', obj);
         const token = JSON.parse(window.localStorage.getItem('token'))
         console.log(token.token);
         if (token) {
@@ -104,7 +103,7 @@ class ClientAddEdit extends Component {
                 .then((res) => {
                     // console.log(res.data)
                     if (res.status === 201) {
-                        console.log('data add success');
+                        // console.log('data add success');
                         this.setState({
                             name: "",
                             address: "",
@@ -129,24 +128,11 @@ class ClientAddEdit extends Component {
         } else {
             alert('Invalid token')
         }
-
+    this.props.loadUsers()
 
     }
 
-    CloseModal = () => {
-        alert('close Button')
-        this.setState({
-            // name: "",
-            // address: "",
-            // contact_info: "",
-            // email_address: "",
-            // phone: "",
-            // msg_success: "",
-            // error_message: {},
-            closeModalState: false
 
-        })
-    }
 
     // edit function area start 
     componentDidMount() {
@@ -182,15 +168,13 @@ class ClientAddEdit extends Component {
                         contact_info: res.data.contact_info,
                         email_address: res.data.email,
                         phone:res.data.phone_no,
-                        status:(res.data.status===true ? 'Active' : 'Deactive')
+                        status:res.data.status
                     })
 
 
 
                 })
                 .catch((error) => {
-                    // console.error('15', error)
-                    // console.log('116',error.response.data.name[0]);
 
                     this.setState({
                         error_message: error.response.data
@@ -211,7 +195,7 @@ class ClientAddEdit extends Component {
             contact_info: this.state.contact_info,
             email: this.state.email_address,
             phone_no: this.state.phone,
-            status:(this.state.status==='Active' ? true : false)
+            status:this.state.status
 
         };
 
@@ -230,12 +214,8 @@ class ClientAddEdit extends Component {
                     if (res.status === 200) {
                         console.log('data add success');
                         this.setState({
-                            name: "",
-                            address: "",
-                            contact_info: "",
-                            email_address: "",
-                            phone: "",
-                            msg_success: "Data Updated Successfully"
+                            msg_success: "Data Updated Successfully",
+                            error_message: ""
                         })
                     }
 
@@ -253,20 +233,26 @@ class ClientAddEdit extends Component {
         } else {
             alert('Invalid token')
         }
-
+        this.props.loadUsers()
 
     }
 
-    componentWillUnmount() {
-        alert('Destroy')
-        console.log('component will hidden now');
+
+    CloseModal = () => {
+        alert('fire')
+        this.setState({
+            openModal:false
+        })
+        document.getElementById('back_drop').style.cssText = 'display:none'
         
+    }
+
+    handleCloseModal = () => {
+        this.props.CloseModal()
     }
 
     render() {
         
-       
-
         let className = ''
         if (this.state.error_message.hasOwnProperty('name')) {
             className += "is-invalid"
@@ -281,11 +267,10 @@ class ClientAddEdit extends Component {
         }
        
 
-
         return (
             <div>
 
-                <BootstrapModal openModal={this.props.openModal} CloseModal={this.state.closeModalState} modalTitle={this.state.modalTitle}>
+                <BootstrapModal openModal={this.props.openModal} modalHandler={this.props.modalHandler}  modalTitle={this.state.modalTitle}>
                     <form>
                         {
                             this.state.msg_success &&
@@ -299,7 +284,7 @@ class ClientAddEdit extends Component {
                                     <input type="text" className={"form-control " + className}
                                         id="name" aria-describedby="emailHelp"
                                         onChange={this.onChangeClientName}
-                                        value={this.state.name} />
+                                        value={this.state.name} autoComplete="off"/>
                                     {this.state.error_message.hasOwnProperty('name') && <InvalidFeedBack message={this.state.error_message.name[0]} />}
 
 
@@ -311,7 +296,7 @@ class ClientAddEdit extends Component {
                                     <input type="text" className={"form-control " + className}
                                         id="address" aria-describedby="emailHelp"
                                         onChange={this.onChangeAddress}
-                                        value={this.state.address} />
+                                        value={this.state.address} autoComplete="off"/>
 
                                     {this.state.error_message.hasOwnProperty('address') && <InvalidFeedBack message={this.state.error_message.address[0]} />}
 
@@ -337,7 +322,7 @@ class ClientAddEdit extends Component {
                                     <input type="email" className={"form-control " + className}
                                         id="exampleInputEmail1" aria-describedby="emailHelp"
                                         onChange={this.onChangeEmail}
-                                        value={this.state.email_address} />
+                                        value={this.state.email_address} autoComplete="off" />
                                     {this.state.error_message.hasOwnProperty('email') && <InvalidFeedBack message={this.state.error_message.email[0]} />}
 
                                 </div>
@@ -348,7 +333,7 @@ class ClientAddEdit extends Component {
                                     <input type="text" className={"form-control " + className}
                                         id="phone" aria-describedby="emailHelp"
                                         onChange={this.onChangePhone}
-                                        value={this.state.phone} />
+                                        value={this.state.phone} autoComplete="off" />
                                     {this.state.error_message.hasOwnProperty('phone_no') && <InvalidFeedBack message={this.state.error_message.phone_no[0]} />}
 
                                 </div>
@@ -356,7 +341,7 @@ class ClientAddEdit extends Component {
                             <div className="col-md-4">
                                 <div className="form-group">
                                     <label htmlFor="exampleFormControlSelect1">Status</label>
-                                    <select className="form-control" id="exampleFormControlSelect1" onChange={this.onChangeStatus} defaultValue={this.state.status}>
+                                    <select className="form-control" id="exampleFormControlSelect1" onChange={this.onChangeStatus} value={this.state.status===true ? 'Active':'Deactive'}>
             
                                         <option value="Active">Active</option>
                                         <option value="Deactive">Deactive</option>
@@ -365,15 +350,13 @@ class ClientAddEdit extends Component {
                                 </div>
                             </div>
 
-                            <div className="col-md-3">
+                            <div className="col-md-12 mt-2">
+                                <hr/>
                                 <div className="form-group text-center">
-                                    {/* <button type="button" className="btn btn-secondary" style={{ 'marginRight': '3px', 'marginLeft': '25px' }}
-                                        data-dismiss="modal"
-                                        onClick={this.CloseModal}  >
-                                        Close
-                </button> */}
+                              
+                                    
                                     {this.props.editFlag === true ?
-                                        <button type="button" className="btn btn-info btn-base" onClick={this.updateClientData}
+                                        <button type="button" className="btn btn-info btn-base " onClick={this.updateClientData}
                                         >
                                             Submit
                 </button> : ''}
@@ -383,6 +366,8 @@ class ClientAddEdit extends Component {
                                         >
                                             Submit
                 </button> : ''}
+                                    
+                  
 
 
                                 </div>

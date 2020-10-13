@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axiosInstance from '../../intercept';
+import TeamManagementAddEdit from './TeamManagementAddEdit';
 // React = require('react');
 // React.Bootstrap = require('react-bootstrap');
 // React.Bootstrap.Select = require('react-bootstrap-select');
@@ -11,8 +12,48 @@ class TeamManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            teamData: []
+            teamData: [],
+            addModalShow: false,
+            editId: null,
+            editFlag: false,
+            addFlag: false
         };
+    }
+
+    open = () => {
+        this.setState({
+            addModalShow: true,
+            addFlag:true
+        })
+
+    }
+
+    deptEdit = async(id) => {
+       
+        this.setState({
+            editId: id,
+            editFlag: true,
+            addModalShow: true
+        })
+       
+    }
+    
+    modalHandler = () => {
+       
+        if (this.state.addModalShow === true) {
+            this.setState({
+                addModalShow: false,
+                addFlag: false,
+                editFlag:false
+            }) 
+        } else {
+            this.setState({
+                addModalShow:true
+            })
+        }
+       
+        document.getElementById('back_drop').style.cssText = 'display:none'
+        
     }
 
     componentDidMount() {
@@ -50,6 +91,17 @@ class TeamManagement extends Component {
     }
     
 
+    teamEdit = async(id) => {
+       
+        this.setState({
+            editId: id,
+            editFlag: true,
+            addModalShow: true
+        })
+       
+    }
+
+
     render() {
         return (
 
@@ -66,77 +118,12 @@ class TeamManagement extends Component {
                                                 <h2 className="mb-0">
                                                 </h2><h3 className="float-left"><i id="addIcon" className="fa fa-chevron-circle-down" style={{ font: 15 }} /> Team management
                   </h3>
-                                                <button type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" className="btn btn-sm btn-info btn-base float-right">
+                                                <button onClick={this.open} type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" className="btn btn-sm btn-info btn-base float-right">
                                                     <i className="fa fa-plus-square-o" />&nbsp;
                     Add New
                   </button>
                                             </div>
-                                            <div id="collapseOne" className="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                                                <div className="card-body">
-                                                    <form>
-                                                        <div className="form-row">
-                                                            <div className="col-md-4">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="exampleInputEmail1"> Team Name</label>
-                                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-4">
-                                                                <label className="title-full">
-                                                                    Members
-                          </label>
-                                                                <br />
-                                                                <select className="selectpicker" multiple data-live-search="true">
-                                                                    <option value="Mu">Munna</option>
-                                                                    <option value="Ha">Hasan</option>
-                                                                    <option value="Km">kamrul</option>
-                                                                    <option value="Em">Emon</option>
-                                                                    <option value="Ra">Rasel</option>
-                                                                    <option value="Km">kamrul</option>
-                                                                    <option value="Km">kamrul</option>
-                                                                    <option value="Km">kamrul</option>
-                                                                </select>
-                                                            </div>
-                                                            {/* 
-                                                  <option value="Km">kamrul</option>
-                                                     <option value="Km">kamrul</option>
-                                                     <option value="Km">kamrul</option>
-                                                     <option value="Km">kamrul</option>
-                                                     <option value="Km">kamrul</option> */}
-                                                            <div className="col-md-4">
-                                                                <div className="ml-5">
-                                                                    <div className="form-group">
-                                                                        <label htmlFor="phone">
-                                                                            Status
-                              </label>
-                                                                        <div className="area-ckeckbox-radio">
-                                                                            <div className="radio radio-success radio-inline ">
-                                                                                <input type="radio" id="inlineRadio1" defaultValue="option1" name="radioInline" defaultChecked />
-                                                                                <label htmlFor="inlineRadio1">
-                                                                                    Active
-                                  </label>
-                                                                            </div>
-                                                                            <div className="radio radio-danger radio-inline ml15">
-                                                                                <input type="radio" id="inlineRadio2" defaultValue="option1" name="radioInline" />
-                                                                                <label htmlFor="inlineRadio2">
-                                                                                    Deactive
-                                  </label>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-row">
-                                                            <div className="form-group col-md-12">
-                                                                <button type="submit" className="btn btn-sm btn-info btn-base float-right">
-                                                                    Submit
-                          </button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
+                                            
                                         </div>
                                     </div>
                                 </div>
@@ -154,7 +141,6 @@ class TeamManagement extends Component {
                                                     <tr>
                                                         <th>Team Name</th>
                                                         <th>Status</th>
-                                                        <th> View_Details</th>
                                                         <th width="80px">Action</th>
                                                     </tr>
                                                 </thead>
@@ -165,13 +151,15 @@ class TeamManagement extends Component {
                                                         <tr key={index}>
                                                         <td>{team_data.name}</td>
                                                         <td><span className="disapproved">{team_data.status === true ? 'Active' : 'Deactive'}</span></td>
-                                                        <td><a href="#" className="badge badge-info" data-toggle="modal" data-target="#BetaModal">details</a></td>
                                                         <td className="text-nowrap"> 
-                                                            <div>
+                                                                    <div>
+                                                                    <button className="btn btn-sm btn-edit mr-2" data-toggle="modal" data-target="#BetaModal">
+                                                                <i className="fas fa-eye" title="View Details"></i>
+                                                            </button>
                                                                 <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
                                                                     <i className="fa fa-trash-o" />
                                                                 </button>
-                                                                <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
+                                                                <button onClick={() => this.teamEdit(team_data.id)}className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
                                                                     <i className="fa fa-pencil" />
                                                                 </button>
                                                             </div>
@@ -185,7 +173,7 @@ class TeamManagement extends Component {
                                                     <tr>
                                                         <th>Team Name</th>
                                                         <th>Status</th>
-                                                        <th> View_Details</th>
+                            
                                                         <th width="80px">Action</th>
                                                     </tr>
                                                 </tfoot>
@@ -194,76 +182,18 @@ class TeamManagement extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="modal fade" id="formModal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div className="modal-dialog modal-lg" role="document">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h5 className="modal-title" id="exampleModalLabel">
-                                                Edit Team
-                </h5>
-                                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">
-                                                    ×
-                  </span>
-                                            </button>
-                                        </div>
-                                        <div className="modal-body">
-                                            <form>
-                                                <div className="form-row">
-                                                    <div className="col-md-4">
-                                                        <div className="form-group">
-                                                            <label htmlFor="exampleInputEmail1"> Name</label>
-                                                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        <label htmlFor="exampleInputEmail1">Members</label>
-                                                        {/* <br /> */}
-                                                        <select className="selectpicker" multiple data-live-search="true">
-                                                            <option value="Mu">Munna</option>
-                                                            <option value="Ha">Hasan</option>
-                                                            <option value="Km">kamrul</option>
-                                                            <option value="Em">Emon</option>
-                                                            <option value="Ra">Rasel</option>
-                                                        </select>
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        <div className="ml-5">
-                                                            <div className="form-group">
-                                                                <label htmlFor="phone">
-                                                                    Status
-                          </label>
-                                                                <div className="area-ckeckbox-radio">
-                                                                    <div className="radio radio-success radio-inline ">
-                                                                        <input type="radio" id="inlineRadio3" defaultValue="option3" name="radioInline" defaultChecked />
-                                                                        <label htmlFor="inlineRadio3">
-                                                                            Active
-                              </label>
-                                                                    </div>
-                                                                    <div className="radio radio-danger radio-inline ml15">
-                                                                        <input type="radio" id="inlineRadio4" defaultValue="option4" name="radioInline" />
-                                                                        <label htmlFor="inlineRadio4">
-                                                                            Deactive
-                              </label>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div className="modal-footer">
-                                            <button type="button" className="btn btn-secondary" data-dismiss="modal">
-                                                Close
-                </button>
-                                            <button type="button" className="btn btn-info btn-base">
-                                                Save changes
-                </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            
+                            {this.state.addModalShow ?
+                                <TeamManagementAddEdit
+                                    openModal={this.state.addModalShow}
+                                    editFlag={this.state.editFlag}
+                                    addFlag={this.state.addFlag}
+                                    editId={this.state.editId}
+                                    loadUsers={this.loadUsers}
+                                    modalHandler={this.modalHandler}
+                                />:null
+                            } 
+
                             {/* view details */}
                             <div className="modal fade" id="AlphaModal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div className="modal-dialog modal-lg" role="document">

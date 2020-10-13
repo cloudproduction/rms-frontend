@@ -1,28 +1,70 @@
 import React, { Component } from 'react';
 import axiosInstance from '../../intercept';
+import ItemManagementAddEdit from './ItemManagementAddEdit';
 
 
 class ItemManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            itemData: []
+            itemData: [],
+            addModalShow: false,
+            editId: null,
+            editFlag: false,
+            addFlag: false
         };
+    }
+
+
+    open = () => {
+        this.setState({
+            addModalShow: true,
+            addFlag:true
+        })
+
+    }
+
+    itemEdit = async(id) => {
+       
+        this.setState({
+            editId: id,
+            editFlag: true,
+            addModalShow: true
+        })
+       
+    }
+    
+    modalHandler = () => {
+       
+        if (this.state.addModalShow === true) {
+            this.setState({
+                addModalShow: false,
+                addFlag: false,
+                editFlag:false
+            }) 
+        } else {
+            this.setState({
+                addModalShow:true
+            })
+        }
+       
+        document.getElementById('back_drop').style.cssText = 'display:none'
+        
     }
 
     componentDidMount() {
         this.loadUsers();
     }
 
-    
+
 
     loadUsers = () => {
 
-        
+
         const token = JSON.parse(window.localStorage.getItem('token'))
-        console.log(token.token);
+    
         if (token) {
-            console.log('105 line');
+            
             axiosInstance.get('/items/', {
                 headers: {
                     'Authorization': `token ${token.token}`
@@ -43,7 +85,23 @@ class ItemManagement extends Component {
             alert('No token here')
         }
     }
+
+
+    deleteItem = async id => {
+        const token = JSON.parse(window.localStorage.getItem('token'))
+        if(token) {
+            await axiosInstance.delete(`/items/${id}`, {
+               
+                headers: {
+                    'Authorization': `token ${token.token}`
+                }
+            }
+            );
+            this.loadUsers();
+          };
     
+    }
+
     render() {
         return (
             <div>
@@ -58,41 +116,13 @@ class ItemManagement extends Component {
                                             <div className="card-header" id="headingOne">
                                                 <h2 className="mb-0">
                                                 </h2><h3 className="float-left"><i id="addIcon" className="fa fa-chevron-circle-down" style={{ font: 15 }} /> Requisition Item Management
-                  </h3>
-                                                <button type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" className="btn btn-sm btn-info btn-base float-right">
+                                                </h3>
+                                                <button onClick={this.open} type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" className="btn btn-sm btn-info btn-base float-right">
                                                     <i className="fa fa-plus-square-o" />&nbsp;
-                    Add New
-                  </button>
+                                                Add New
+                                                </button>
                                             </div>
-                                            <div id="collapseOne" className="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                                                <div className="card-body">
-                                                    <form>
-                                                        <div className="form-row">
-                                                            <div className="col-md-5">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="exampleInputEmail1">Item Name</label>
-                                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-5">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="exampleFormControlSelect1">Status</label>
-                                                                    <select className="form-control" id="exampleFormControlSelect1">
-                                                                        <option value="Disable">Disable</option>
-                                                                        <option value="Enable">Enable</option>
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                            <div className="form-group col-md-2">
-                                                                <label htmlFor=" exampleFormControlSelect1">&nbsp;</label>
-                                                                <button type="submit" className="btn btn-block btn-info btn-base float-right ">
-                                                                    Submit
-                          </button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -114,26 +144,27 @@ class ItemManagement extends Component {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    
+
                                                     {
                                                         this.state.itemData.map((item_data, index) =>
-                                                        <tr key={index}>
-                                                        <td>{item_data.name}</td>
-                                                        <td><span className="disapproved">{item_data.status === true ? 'Active': 'Deactive'}</span></td>
-                                                        <td className="text-nowrap">
-                                                            <div>
-                                                                <button className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
+                                                            <tr key={index}>
+                                                                <td>{item_data.name}</td>
+                                                                <td><span className="disapproved">{item_data.status === true ? 'Active' : 'Deactive'}</span></td>
+                                                                <td className="text-nowrap">
+                                                                    <div>
+                                                                    <button onClick={() => {if(window.confirm('Are you sure to delete this record?')){ this.deleteItem(item_data.id)};}} className="btn btn-sm btn-del mr10" data-toggle="modal" data-target="#">
                                                                     <i className="fa fa-trash-o" />
-                                                                </button>
-                                                                <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
+                                                                        </button>
+                                                                        
+                                                                <button onClick={() => this.itemEdit(item_data.id)} className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
                                                                     <i className="fa fa-pencil" />
                                                                 </button>
-                                                            </div>
-                                                        </td>
-                                                    </tr>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
                                                         )
-                                                  }
-                                                    
+                                                    }
+
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
@@ -150,56 +181,18 @@ class ItemManagement extends Component {
                         </div>
                     </div>
                 </div>
-                {/*Sayket Client add code End*/}
-                <div className="modal fade" id="formModal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div className="modal-dialog modal-lg" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLabel">
-                                    Edit Requisition Item
-          </h5>
-                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">
-                                        ×
-            </span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <form>
-                                    <div className="form-row">
-                                        <div className="col-md-12">
-                                            <div className="row">
-                                                <div className="col-md-6">
-                                                    <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">Item Name</label>
-                                                        <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <div className="form-group">
-                                                        <label htmlFor="exampleFormControlSelect1">Status</label>
-                                                        <select className="form-control" id="exampleFormControlSelect1">
-                                                            <option value="Disable">Disable</option>
-                                                            <option value="Enable">Enable</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">
-                                    Close
-          </button>
-                                <button type="button" className="btn btn-info btn-base">
-                                    Save changes
-          </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
+                {this.state.addModalShow ?
+                    <ItemManagementAddEdit
+                        openModal={this.state.addModalShow}
+                        editFlag={this.state.editFlag}
+                        addFlag={this.state.addFlag}
+                        editId={this.state.editId}
+                        loadUsers={this.loadUsers}
+                        modalHandler={this.modalHandler}
+                    /> : null
+                }
+
             </div>
 
         );

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import 'font-awesome/css/font-awesome.min.css';
 import axiosInstance from '../../intercept';
+import UserAddEdit from './UserAddEdit';
+
 class UserManagement extends Component {
 
     constructor(props) {
@@ -8,14 +10,52 @@ class UserManagement extends Component {
         super(props)
         this.state = {
             userData: [],
-            username: "",
-            email: "",
-            password: "",
-            first_name: "",
-            last_name: "",
-            groups: []
+            addModalShow: false,
+            editId: null,
+            editFlag: false,
+            addFlag: false
         }
     }
+
+
+
+
+    open = () => {
+        this.setState({
+            addModalShow: true,
+            addFlag:true
+        })
+
+    }
+
+    deptEdit = async(id) => {
+       
+        this.setState({
+            editId: id,
+            editFlag: true,
+            addModalShow: true
+        })
+       
+    }
+    
+    modalHandler = () => {
+       
+        if (this.state.addModalShow === true) {
+            this.setState({
+                addModalShow: false,
+                addFlag: false,
+                editFlag:false
+            }) 
+        } else {
+            this.setState({
+                addModalShow:true
+            })
+        }
+       
+        document.getElementById('back_drop').style.cssText = 'display:none'
+        
+    }
+
 
     componentDidMount() {
         this.loadUsers();
@@ -67,82 +107,13 @@ class UserManagement extends Component {
                                             <div className="card-header" id="headingOne">
                                                 <h2 className="mb-0">
                                                 </h2><h3 className="float-left"><i id="addIcon" className="fa fa-chevron-circle-down" style={{ font: 15 }} /> User management
-                  </h3>
-                                                <button type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" className="btn btn-sm btn-info btn-base float-right">
+                                                 </h3>
+                                                <button onClick={this.open} type="button" data-toggle="modal" data-target="#formModal" aria-expanded="true" aria-controls="collapseOne" className="btn btn-sm btn-info btn-base float-right">
                                                     <i className="fa fa-plus-square-o" />&nbsp;
-                    Add New
-                  </button>
+                                                     Add New
+                                                 </button>
                                             </div>
-                                            <div id="collapseOne" className="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
-                                                <div className="card-body">
-                                                    <form>
-                                                        <div className="form-row">
-                                                            <div className="col-md-4">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="exampleInputEmail1"> First Name</label>
-                                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-4">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="exampleInputEmail1"> Last  Name</label>
-                                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-4">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="exampleInputEmail1">Username</label>
-                                                                    <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="form-row">
-                                                            <div className="col-md-4">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="exampleInputEmail1">Email address</label>
-                                                                    <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-4">
-                                                                <div className="form-group">
-                                                                    <label htmlFor="exampleInputEmail1">Password </label>
-                                                                    <input type="password" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="col-md-4">
-                                                                <div className="form-group">
-                                                                    <label>User Groups</label>
-                                                                    <select className="form-control" id="UserGroup">
-                                                                        <option value="">Select Groups</option>
-                                                                        <option value="Managerial">Managerial</option>
-                                                                        <option value="Admin">Admin</option>
-                                                                        <option value="Executive">Executive</option>
-                                                                    </select>
-
-                                                                </div>
-                                                            </div>
-
-                                                            <div className=" col-md-4 ">
-                                                                <div className="form-group">
-                                                                    <label htmlFor=" exampleFormControlSelect1"> &nbsp;</label>
-                                                                    <br />
-                                                                    <button type="submit" className="btn btn btn-info btn-base">
-                                                                        Submit
-                            </button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        {/* <div class="form-row">
-                                                  <div class="form-group col-md-12">
-
-                                                  </div>
-                                                  <div class="form-group col-md-6">
-
-                                                  </div>
-                                              </div> */}
-                                                    </form>
-                                                </div>
-                                            </div>
+                                          
                                         </div>
                                     </div>
                                 </div>
@@ -153,10 +124,7 @@ class UserManagement extends Component {
                         <div className="row">
                             <div className="col">
                                 <div className="card table-card">
-                                    {/* <div class="card-header">
-                              <h3 class="float-left"><i class="fa fa-info-circle"></i> Table Title</h3>
-                              <button class="btn btn-sm btn-info btn-base float-right"><i class="fa fa-plus-square-o"></i>&nbsp; Add New </button>
-                          </div> */}
+                                
                                     <div className="card-body">
                                         <div className="table-responsive">
                                             <table id="example" className="table table-striped table-bordered" style={{ width: '100%' }}>
@@ -179,8 +147,10 @@ class UserManagement extends Component {
                                                         <td>{user_data.username}</td>
                                                         <td>{user_data.email}</td>
                                                         <td className="text-nowrap" >
-                                                            <span className="badge badge-success">Admin</span>
-                                                            <span className="badge badge-success">Managerial</span>
+                                                                    {user_data.groups.map((group_role, i) =>
+                                                                        <span key={i} className="badge badge-success">{group_role.name}</span>
+                                                            
+                                                           )}
                                                         </td>
                                                         <td className="text-nowrap">
 
@@ -212,81 +182,17 @@ class UserManagement extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="modal fade" id="formModal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div className="modal-dialog modal-lg" role="document">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                            <h5 className="modal-title" id="exampleModalLabel">
-                                                Edit User
-                </h5>
-                                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">
-                                                    ×
-                  </span>
-                                            </button>
-                                        </div>
-                                        <div className="modal-body">
-                                            <form>
-                                                <div className="form-row">
-                                                    <div className="col-md-4">
-                                                        <div className="form-group">
-                                                            <label htmlFor="exampleInputEmail1"> First Name</label>
-                                                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        <div className="form-group">
-                                                            <label htmlFor="exampleInputEmail1"> Last  Name</label>
-                                                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        <div className="form-group">
-                                                            <label htmlFor="exampleInputEmail1">Username</label>
-                                                            <input type="text" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="form-row">
-                                                    <div className="col-md-4">
-                                                        <div className="form-group">
-                                                            <label htmlFor="exampleInputEmail1">Email address</label>
-                                                            <input type="email" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        <div className="form-group">
-                                                            <label htmlFor="exampleInputEmail1">Password </label>
-                                                            <input type="password" className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        <div className="form-group">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                {/* <div class="form-row">
-                                          <div class="form-group col-md-12">
-
-                                          </div>
-                                          <div class="form-group col-md-6">
-
-                                          </div>
-                                      </div> */}
-                                            </form>
-                                        </div>
-                                        <div className="modal-footer">
-                                            <label htmlFor="exampleInputEmail1" />
-                                            <button type="button" className="btn btn-secondary" data-dismiss="modal">
-                                                Close
-                </button>
-                                            <button type="button" className="btn btn-info btn-base">
-                                                Save changes
-                </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            
+                            {this.state.addModalShow ?
+                                <UserAddEdit
+                                    openModal={this.state.addModalShow}
+                                    editFlag={this.state.editFlag}
+                                    addFlag={this.state.addFlag}
+                                    editId={this.state.editId}
+                                    loadUsers={this.loadUsers}
+                                    modalHandler={this.modalHandler}
+                                />:null
+                            } 
                         </div>
                     </div>
                 </div>

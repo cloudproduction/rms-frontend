@@ -8,6 +8,9 @@ class DepartmentManagement extends Component {
         this.state = {
             deptData: [],
             addModalShow: false,
+            editId: null,
+            editFlag: false,
+            addFlag: false
             
         };
     }
@@ -48,6 +51,7 @@ class DepartmentManagement extends Component {
         }
     }
 
+
     deleteDept = async id => {
         const token = JSON.parse(window.localStorage.getItem('token'))
         if(token) {
@@ -61,11 +65,48 @@ class DepartmentManagement extends Component {
             this.loadUsers();
           };
     
-   }
+    }
+    
+
+    open = () => {
+        this.setState({
+            addModalShow: true,
+            addFlag:true
+        })
+
+    }
+
+    deptEdit = async(id) => {
+       
+        this.setState({
+            editId: id,
+            editFlag: true,
+            addModalShow: true
+        })
+       
+    }
+    
+    modalHandler = () => {
+       
+        if (this.state.addModalShow === true) {
+            this.setState({
+                addModalShow: false,
+                addFlag: false,
+                editFlag:false
+            }) 
+        } else {
+            this.setState({
+                addModalShow:true
+            })
+        }
+       
+        document.getElementById('back_drop').style.cssText = 'display:none'
+        
+    }
+
 
     render() {
-        let addModalClose = () => this.setState({ addModalShow: false })
-        console.log(this.state.addModalShow);
+      
         return (
             <div>
                 <div className="layout_content">
@@ -79,15 +120,15 @@ class DepartmentManagement extends Component {
                                             <div className="card-header" id="headingOne">
                                                 <h2 className="mb-0">
                                                 </h2><h3 className="float-left"><i id="addIcon" className="fa fa-chevron-circle-down" style={{ font: 15 }} /> Department management
-                  </h3>
-                                                <button type="button" data-toggle="modal" data-target="#formModal"
+                                                </h3>
+                                                <button  onClick={this.open} type="button" data-toggle="modal" data-target="#formModal"
                                                     aria-expanded="true"
                                                     aria-controls="collapseOne"
                                                     className="btn btn-sm btn-info btn-base float-right"
-                                                    onClick={() => this.setState({ addModalShow: true })}>
+                                                    >
                                                     <i className="fa fa-plus-square-o" />&nbsp;
-                    Add New
-                  </button>
+                                                    Add New
+                                                 </button>
                                             </div>
                                             
                                         </div>
@@ -100,10 +141,7 @@ class DepartmentManagement extends Component {
                         <div className="row ">
                             <div className="col">
                                 <div className="card table-card">
-                                    {/* <div class="card-header ">
-                                          <h3 class="float-left "><i class="fa fa-info-circle "></i> Table Title</h3>
-                                          <button class="btn btn-sm btn-info btn-base float-right "><i class="fa fa-plus-square-o "></i>&nbsp; Add New </button>
-                                      </div> */}
+                             
                                     <div className="card-body">
                                         <div className="table-responsive">
                                             <table id="example" className="table table-striped table-bordered " style={{ width: '100%' }}>
@@ -127,7 +165,7 @@ class DepartmentManagement extends Component {
                                                                     <i className="fa fa-trash-o" />
                                                                         </button>
                                                                         
-                                                                <button className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
+                                                                <button onClick={() => this.deptEdit(dep_data.id)} className="btn btn-sm btn-edit" data-toggle="modal" data-target="#formModal">
                                                                     <i className="fa fa-pencil" />
                                                                 </button>
                                                             </div>
@@ -150,12 +188,16 @@ class DepartmentManagement extends Component {
                                     </div>
                                 </div>
                             </div>
-
-                            <DepartmentAddEdit
-                            show={this.state.addModalShow}
-                            onHide={addModalClose}
-                            />
-                            
+                            {this.state.addModalShow ?
+                                <DepartmentAddEdit
+                                    openModal={this.state.addModalShow}
+                                    editFlag={this.state.editFlag}
+                                    addFlag={this.state.addFlag}
+                                    editId={this.state.editId}
+                                    loadUsers={this.loadUsers}
+                                    modalHandler={this.modalHandler}
+                                />:null
+                            }       
                         </div>
                     </div>
                 </div>

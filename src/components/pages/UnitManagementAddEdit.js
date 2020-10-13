@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
+import BootstrapModal from '../partials/BootstrapModal';
+import axiosInstance from '../../intercept';
+import InvalidFeedBack from '../partials/ErrorStyle';
 
 class UnitManagementAddEdit extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
             name: "",
-            status: true
+            status: true,
+            error_message: {},
+            msg_success: "",
+            modalTitle: (this.props.addFlag === true ? 'Add Unit' : 'Edit Unit')
         };
+
         this.onChangeUnitName = this.onChangeUnitName.bind(this);
         this.onChangeStatu = this.onChangeStatu.bind(this);
     }
@@ -18,7 +25,6 @@ class UnitManagementAddEdit extends Component {
     }
 
     onChangeStatu(e) {
-        console.log(e.target.value);
         if (e.target.value === 'Active') {
             this.setState({
                 status: true
@@ -31,67 +37,225 @@ class UnitManagementAddEdit extends Component {
 
     }
 
+    CloseModal = () => {
+
+        this.setState({
+            openModal: false
+        })
+        document.getElementById('back_drop').style.cssText = 'display:none'
+
+    }
+
+    handleCloseModal = () => {
+        this.props.CloseModal()
+    }
+
+    // unit add functionality
+    unitDataAdd = async (e) => {
+
+        e.preventDefault()
+        const obj = {
+            name: this.state.name,
+            status: this.state.status
+
+        };
+
+        // console.log('data test', obj);
+        const token = JSON.parse(window.localStorage.getItem('token'))
+        
+        if (token) {
+
+            await axiosInstance.post('/units/', obj, {
+                headers: {
+                    'Authorization': `token ${token.token}`
+                }
+
+            })
+                .then((res) => {
+                    if (res.status === 201) {
+                        this.setState({
+                            name: "",
+                            msg_success: "Data Added Successfully"
+                        })
+                    }
+
+                })
+                .catch((error) => {
+                    // console.error(error)
+                    this.setState({
+                        error_message: error.response.data
+                    })
+                })
+        } else {
+            alert('Invalid token')
+        }
+
+        this.setState({
+            name: "",
+            status: ""
+        })
+
+        this.props.loadUsers()
+    }
+
+ // edit function area start 
+ componentDidMount() {
+    console.log('153 line for test');
+     if (this.props.editFlag === true) {
+        this.editLoaderData()
+        console.log('testing');
+    } else {
+        console.log('no edit data call');
+    }
+  }
+    
+  editLoaderData = async() => {
+
+    const token = JSON.parse(window.localStorage.getItem('token'))
+
+    if (token) {
+
+       await axiosInstance.get(`/units/${this.props.editId}`, {
+            headers: {
+                'Authorization': `token ${token.token}`
+            }
+
+        })
+            .then((res) => {
+                console.log(res.data)
+
+                // console.log('data add success');
+                this.setState({
+                    name: res.data.name,
+                    status:res.data.status
+                })
+
+
+
+            })
+            .catch((error) => {
+
+                this.setState({
+                    error_message: error.response.data
+                })
+
+            })
+    } else {
+        alert('Invalid token')
+    }
+}
+
+updateClientData = async (e) => {
+
+    e.preventDefault()
+    const obj = {
+        name: this.state.name,
+        status:this.state.status
+
+    };
+
+    const token = JSON.parse(window.localStorage.getItem('token'))
+    console.log(token.token);
+    if (token) {
+
+        await axiosInstance.put(`/units/${this.props.editId}/`, obj, {
+            headers: {
+                'Authorization': `token ${token.token}`
+            }
+
+        })
+            .then((res) => {
+                // console.log(res.data)
+                if (res.status === 200) {
+                    // console.log('data add success');
+                    this.setState({
+                        msg_success: "Data Updated Successfully",
+                        error_message: ""
+                    })
+                }
+
+
+            })
+            .catch((error) => {
+
+                this.setState({
+                    error_message: error.response.data
+                })
+
+            })
+    } else {
+        alert('Invalid token')
+    }
+    this.props.loadUsers()
+
+}
+    
+    
+
     render() {
+
+        let className = ''
+        if (this.state.error_message.hasOwnProperty('name')) {
+            className += "is-invalid"
+        }
+
         return (
-                      <div>
-<div className="modal fade" id="formModal" tabIndex={-1} role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div className="modal-dialog modal-lg" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="exampleModalLabel">
-                                    Add Unit
-        </h5>
-                                <button type="button" className="close" data-dismiss="modal"
-                                    aria-label="Close"
-                                    onClick= {this.props.onHide}>
-                                    <span aria-hidden="true">
-                                        ×
-          </span>
-                                </button>
-                            </div>
-                            <div className="modal-body">
-                                <form>
-                                    <div className="form-row">
-                                        <div className="col-md-12">
-                                            <div className="row">
-                                                <div className="col-md-6">
-                                                    <div className="form-group">
-                                                        <label htmlFor="exampleInputEmail1">Unit Name</label>
-                                                        <input type="text" className="form-control"
-                                                            id="exampleInputEmail1" aria-describedby="emailHelp"
-                                                            onChange={this.onChangeUnitName}
-                                                            value={this.state.name} />
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <div className="form-group">
-                                                        <label htmlFor="exampleFormControlSelect1">Status</label>
-                                                        <select className="form-control" id="exampleFormControlSelect1"  onChange={this.onChangeStatu}>
-                                                            <option value="">Select Option</option>
-                                                            <option value="Active">Active</option>
-                                                            <option value="Deactive">Deactive</option>
-                                                            
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                            </div>
+            <div>
+                <BootstrapModal openModal={this.props.openModal} modalHandler={this.props.modalHandler} modalTitle={this.state.modalTitle}>
+                    <form>
+                        {
+                            this.state.msg_success &&
+                            <p className="alert alert-success">{this.state.msg_success}</p>
+                        }
+                        <div className="form-row">
+                            <div className="col-md-12">
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <div className="form-group">
+                                            <label htmlFor="exampleInputEmail1">Unit Name</label>
+                                            <input type="text" className={"form-control " + className} autoComplete="off"
+                                                id="exampleInputEmail1" aria-describedby="emailHelp"
+                                                onChange={this.onChangeUnitName}
+                                                value={this.state.name} />
+                    {this.state.error_message.hasOwnProperty('name') && <InvalidFeedBack message={this.state.error_message.name[0]} />}
+
                                         </div>
                                     </div>
-                                </form>
+                                    <div className="col-md-6">
+                                        <div className="form-group">
+                                            <label htmlFor="exampleFormControlSelect1">Status</label>
+                                            <select className="form-control" id="exampleFormControlSelect1" onChange={this.onChangeStatu} value={this.state.status === true ? 'Active' : 'Deactive'}>
+                                                <option value="Active">Active</option>
+                                                <option value="Deactive">Deactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="col-md-12 mt-2">
+                                <hr />
+                                <div className="form-group text-center">
+
+                                    {this.props.editFlag === true ?
+                                        <button type="button" className="btn btn-info btn-base " onClick={this.updateClientData}
+                                        >
+                                            Submit
+                                        </button> : ''
+                                    }
+
+                                    {this.props.addFlag === true ?
+                                        <button type="button" className="btn btn-info btn-base" onClick={this.unitDataAdd}
+                                        >
+                                            Submit
+                                      </button> : ''
+                                    }
+
+                                </div>
                             </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">
-                                    Close
-        </button>
-                                <button type="button" className="btn btn-info btn-base"
-                                    onClick={this.addUnittData}
-                                >
-                                    Submit
-        </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </form>
+                </BootstrapModal>
             </div>
         );
     }

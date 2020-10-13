@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 // import axios from 'axios';
 import ClientAddEdit from './ClientAddEdit';
 import axiosInstance from '../../intercept';
+import Pagination from '../partials/Pagination';
 
 
 
@@ -13,7 +14,6 @@ class ClientManagement extends Component {
         this.state = {
             clientData: [],
             addModalShow: false,
-            // addModalClose: false,
             editId: null,
             editFlag: false,
             addFlag: false
@@ -74,12 +74,29 @@ class ClientManagement extends Component {
     }
 
     open = () => {
-        alert('open')
         this.setState({
             addModalShow: true,
             addFlag:true
         })
 
+    }
+
+    modalHandler = () => {
+        
+        if (this.state.addModalShow === true) {
+            this.setState({
+                addModalShow: false,
+                addFlag: false,
+                editFlag:false
+            }) 
+        } else {
+            this.setState({
+                addModalShow:true
+            })
+        }
+       
+        document.getElementById('back_drop').style.cssText = 'display:none'
+        
     }
 
     clientEdit = async(id) => {
@@ -92,7 +109,7 @@ class ClientManagement extends Component {
        
     }
 
- 
+
     render() {
 
      
@@ -131,10 +148,7 @@ class ClientManagement extends Component {
                         <div className="row">
                             <div className="col">
                                 <div className="card table-card">
-                                    {/* <div class="card-header">
-                              <h3 class="float-left"><i class="fa fa-info-circle"></i> Table Title</h3>
-                              <button class="btn btn-sm btn-info btn-base float-right"><i class="fa fa-plus-square-o"></i>&nbsp; Add New </button>
-                          </div> */}
+                                  
                                     <div className="card-body">
                                         <div className="table-responsive">
                                             <table id="example" className="table table-striped table-bordered" style={{ width: '100%' }}>
@@ -190,10 +204,13 @@ class ClientManagement extends Component {
                                                     </tr>
                                                 </tfoot>
                                             </table>
+                                            
                                         </div>
                                     </div>
+                                    {/* <Pagination/> */}
                                 </div>
                             </div>
+                            <hr/>
                             {this.state.addModalShow ?
                            
                            <ClientAddEdit
@@ -201,7 +218,8 @@ class ClientManagement extends Component {
                            editFlag={this.state.editFlag}
                            addFlag={this.state.addFlag}
                            editId={this.state.editId}
-                       
+                            loadUsers={this.loadUsers}
+                            modalHandler={this.modalHandler}      
                                 /> : null
                             }
 
